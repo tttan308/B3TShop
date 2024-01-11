@@ -2,6 +2,7 @@ const express = require("express");
 const initWebRoute = require("./routers/web");
 const { engine } = require("express-handlebars");
 const customErr = require("./models/customErr");
+const initProductRoute = require("./routers/product");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.set("view engine", ".hbs");
 app.set("views", "./views");
 
 initWebRoute(app);
+initProductRoute(app);
 
 app.use((err, req, res, next) => {
   let sc = 500;
