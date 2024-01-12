@@ -72,4 +72,17 @@ $(document).ready(function () {
   $("#btn-top").click(function () {
     $("body,html").stop().animate({ scrollTop: 0 }, 800);
   });
+  var value = parseInt($("#num-order").attr("value"));
+  $("#plus").click(function () {
+    value++;
+    $("#num-order").attr("value", value);
+    update_href(value);
+  });
+  $("#minus").click(function () {
+    if (value > 1) {
+      value--;
+      $("#num-order").attr("value", value);
+    }
+    update_href(value);
+  });
 });
