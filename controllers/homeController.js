@@ -7,6 +7,14 @@ const getHomePage = async (req, res) => {
     next(new customErr(error.message, 505));
   }
 };
+const getContractPage = async (req, res) => {
+  try {
+    return res.render("contact");
+  } catch (error) {
+    next(new customErr(error.message, 505));
+  }
+};
 module.exports = {
   getHomePage,
+  getContractPage,
 };

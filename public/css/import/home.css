@@ -299,5 +299,9 @@
 }
 
 ul.list-item {
-    padding: 0 !important;
+    padding: 0;
+}
+
+ul.sub-menu {
+    padding: 0;
 }
