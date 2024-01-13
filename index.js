@@ -4,6 +4,7 @@ const { engine } = require("express-handlebars");
 const customErr = require("./models/customErr");
 const initProductRoute = require("./routers/product");
 const initCartRoute = require("./routers/cart");
+const initAuthRoute = require("./routers/auth");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ app.set("views", "./views");
 initWebRoute(app);
 initProductRoute(app);
 initCartRoute(app);
+initAuthRoute(app);
 
 app.use((err, req, res, next) => {
   let sc = 500;
