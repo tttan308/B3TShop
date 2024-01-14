@@ -5,7 +5,14 @@ const getCartPage = async (req, res) => {
     console.log(error);
   }
 };
-
+const getCheckoutPage = async (req, res) => {
+  try {
+    return res.render("checkout");
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   getCartPage,
+  getCheckoutPage,
 };
