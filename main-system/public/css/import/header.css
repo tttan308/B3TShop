@@ -269,3 +269,65 @@
 #cart-wp #dropdown .action-cart a.checkout:hover {
     background: #af1427;
 }
+
+/* main menu update */
+#main-menu li.info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 0 10px 15px;
+    color: #fff;
+    float: right;
+    cursor: pointer;
+    position: relative;
+}
+
+#main-menu li.info:hover ul.sub-menu {
+    display: block;
+}
+
+#main-menu li.info:hover .arrow {
+    display: block;
+}
+
+
+#main-menu li.info img {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+
+#main-menu li.info ul.sub-menu {
+    position: absolute;
+    top: 45px;
+    background: #fff;
+    z-index: 100;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+#main-menu li.info ul.sub-menu>li:first-child {
+    border-bottom: 2px solid #cac8c8;
+    width: 100%;
+}
+
+#main-menu li.info ul.sub-menu>li>a {
+    color: #333 !important;
+}
+
+#main-menu li.info ul.sub-menu>li>a:hover {
+    color: #da263c !important;
+}
+
+.arrow {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    top: 37px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    display: none;
+}
