@@ -13,6 +13,28 @@
                     <li>
                         <a href="/contact" title="">Liên hệ</a>
                     </li>
+                    {{#if isLogin }}
+                    <li class="info">
+                        <img src="https://down-vn.img.susercontent.com/file/de586a64b908254b7fd971d67f97ecfb_tn" alt="">
+                        <span>Dang Duc Ba</span>
+                        <div class="arrow"></div>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="/profile" title="">Tài khoản</a>
+                            </li>
+                            <li>
+                                <a href="/logout" title="">Đăng xuất</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {{else}}
+                    <li class="d-flex align-items-center">
+                        <a href="/auth/login" style="padding-right:0px" title="">Đăng nhập</a>
+                        <div class="mx-2" style="border-right: 2px solid hsla(0,0%,100%,.4);
+    height: 0.8125rem;"></div>
+                        <a href="/auth/register" style="padding-left:0px" title="">Đăng ký</a>
+                    </li>
+                    {{/if}}
                 </ul>
             </div>
         </div>
