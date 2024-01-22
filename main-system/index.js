@@ -1,26 +1,32 @@
 const express = require("express");
-const initWebRoute = require("./routers/web");
+const cors = require("cors");
+const dotenv = require("dotenv");
+dotenv.config();
+const cookieParser = require("cookie-parser");
 const { engine } = require("express-handlebars");
-const customErr = require("./models/customErr");
-const initProductRoute = require("./routers/product");
-const initCartRoute = require("./routers/cart");
-const initAuthRoute = require("./routers/auth");
-require("dotenv").config();
 const app = express();
-const port = process.env.PORT || 3000;
 
-app.use(express.urlencoded({ extended: true }));
+const customErr = require("./src/models/customErr");
+
+// Config
+app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
+
+// Body parser
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+// Template engine
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
-app.set("views", "./views");
+app.set("views", "./src/views");
 
-initWebRoute(app);
-initProductRoute(app);
-initCartRoute(app);
-initAuthRoute(app);
+
+
+// Routes
+const initRoutes = require("./src/routes");
+initRoutes(app);
 
 app.use((err, req, res, next) => {
   let sc = 500;
@@ -35,6 +41,8 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Connect to DB
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`http://localhost:${port}`);
 });
