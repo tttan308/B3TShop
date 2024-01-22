@@ -38,7 +38,9 @@ db.cartItems = require('./CartItem')(sequelize, DataTypes);
 db.tokenLogs = require('./TokenLogs')(sequelize, DataTypes);
 
 
-db.sequelize.sync({ force: false })
+db.sequelize.sync(
+    { force: false } // force = false có nghĩa là nếu bảng đã tồn tại thì sẽ không tạo lại nữa, đồng thời nó sẽ không xóa dữ liệu cũ đi
+)
     .then(() => {
         console.log('yes re-sync done!')
     })
