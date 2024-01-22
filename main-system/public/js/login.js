@@ -18,4 +18,53 @@
       input.attr("type", "password");
     }
   });
+
+  $('.signup-form').on('submit', function (e) {
+    e.preventDefault();
+
+    const username = $('[name="username"]').val();
+    const email = $('[name="email"]').val();
+    const password = $('[name="password"]').val();
+
+    $.ajax({
+      url: '/auth/register',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        username: username,
+        email: email,
+        password: password
+      }),
+      success: function (data) {
+        console.log('Success:', data);
+      },
+      error: function (error) {
+        console.error('Error:', error);
+      }
+    });
+  });
+
+  $('.signin-form').on('submit', function (e) {
+    e.preventDefault();
+
+    const username = $('[name="username"]').val();
+    const password = $('[name="password"]').val();
+
+    $.ajax({
+      url: '/auth/login',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        username: username,
+        password: password
+      }),
+      success: function (data) {
+        console.log('Success:', data);
+      },
+      error: function (error) {
+        console.error('Error:', error);
+      }
+    });
+  });
+
 })(jQuery);
