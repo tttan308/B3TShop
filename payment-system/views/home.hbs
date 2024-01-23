@@ -1,0 +1,41 @@
+ <div class="container mt-4 border text-center d-flex flex-column align-items-center" >
+  <div class="alert alert-primary alert-dismissible fade show mt-5 w-100" id="wp-message" role="alert">
+    <strong id="content-message">Quý khách vui lòng không tắt trình duyệt cho đến khi nhận được kết quả thanh toán. Xin cảm ơn !</strong>
+    
+  </div>
+  <div style="width: 500px;" class="pb-4">
+        <h2 class="text-center text-uppercase pt-2 title py-2">Quản lý thanh toán</h2>
+        <h3 class="mt-4">Thanh toán trực tuyến</h3>
+        <div class="fw-bold fs-3"><span id="product-price">500000</span> VND</div>
+        <form id="paymentForm" class="mt-3">
+            <div class="mb-4 text-center">
+                <div class="fw-bold fs-3">Số dư hiện tại: <span id="total-money" class="text-danger" >5000 </span><span class="text-danger">VND</span></div>
+            </div>
+            <button type="button" class="btn btn-danger" onclick="processPayment()">Thanh toán</button>
+        </form>
+  </div>
+ </div>
+ <script>
+        function processPayment() {
+            var totalMoney = parseFloat(document.getElementById("total-money").textContent);
+            var productPrice = parseFloat(document.getElementById("product-price").textContent);
+
+            if (totalMoney >= productPrice) {
+                displayPaymentResult("Bạn đã thanh toán thành công", true);
+            } else {
+                displayPaymentResult("Số dư của bạn không đủ để thanh toán", false);
+            }
+        }
+
+        function displayPaymentResult(message, isSuccess) {
+            var resultElement = document.getElementById("content-message");
+            resultElement.textContent = message;
+            var wpMessage=document.getElementById("wp-message");
+            
+            wpMessage.classList.remove("alert-primary");
+            wpMessage.classList.remove("alert-danger");
+
+           
+            wpMessage.classList.add(isSuccess ? "alert-success" : "alert-danger");
+        }
+    </script>
