@@ -69,4 +69,37 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+  getLevel1Category: async () => {
+    const level1Categories = await Category.findAll({
+      where: {
+        ParentID: null,
+      },
+    });
+    return level1Categories;
+  },
+
+  getLevel2Category: async (level1CategoryID) => {
+    const level2Categories = await Category.findAll({
+      where: {
+        ParentID: level1CategoryID,
+      },
+    });
+    return level2Categories;
+  },
+
+  getHierachyCategories: async () => {
+    const level1Categories = await Category.findAll({
+      where: {
+        ParentID: null,
+      },
+      include: [
+        {
+          model: Category,
+          as: "Level2Categories",
+        },
+      ],
+    });
+    return level1Categories;
+  },
 };

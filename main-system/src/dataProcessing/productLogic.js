@@ -63,9 +63,15 @@ module.exports = {
     return updatedProduct;
   },
 
+
+  updateProductImage: sync(productId, imageURL) => {
+  }
+
   //delete product
   deleteProduct: async (productId) => {
     const deletedProduct = await Product.findByIdAndDelete(productId);
     return deletedProduct;
   },
+
+ 
 };
