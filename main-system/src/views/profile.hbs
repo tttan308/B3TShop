@@ -1,0 +1,73 @@
+<div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-0">Hồ Sơ Người Dùng</h2>
+                    </div>
+                    <div class="card-body px-4 py-5">
+                        <!-- Họ và Tên -->
+                        <div class="form-group row">
+                            <h1 class="col-sm-4 col-form-label font-weight-bold">Họ và Tên:</h1>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control-plaintext" value="{{user.FullName}}">
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group row">
+                            <h1 class="col-sm-4 col-form-label font-weight-bold">Email:</h1>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control-plaintext" value="{{user.Email}}">
+                            </div>
+                        </div>
+
+                        <!-- Số Điện Thoại -->
+                        <div class="form-group row">
+                            <h1 class="col-sm-4 col-form-label font-weight-bold">Số Điện Thoại:</h1>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control-plaintext" value="{{user.PhoneNumber}}">
+                            </div>
+                        </div>
+
+                        <!-- Địa Chỉ -->
+                        <div class="form-group row">
+                            <h1 class="col-sm-4 col-form-label font-weight-bold">Địa Chỉ:</h1>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control-plaintext" value="{{user.Address}}">
+                            </div>
+                        </div>
+
+                        <!-- Ngày Sinh -->
+                        <div class="form-group row">
+                            <h1 class="col-sm-4 col-form-label font-weight-bold">Ngày Sinh:</h1>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control-plaintext" value="{{user.DateOfBirth}}">
+                            </div>
+                        </div>
+
+                        <!-- Giới Tính -->
+                        <div class="form-group row">
+                            <h1 class="col-sm-4 col-form-label font-weight-bold">Giới Tính:</h1>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control-plaintext" value="{{user.Gender}}">
+                            </div>
+                        </div>
+
+                        <!-- Ngày Tạo Tài Khoản -->
+                        <div class="form-group row">
+                            <h1 class="col-sm-4 col-form-label font-weight-bold">Ngày Tạo Tài Khoản:</h1>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control-plaintext" value="{{user.DateCreated}}">
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-secondary mr-2" onclick="history.back()">Quay Về</button>
+                            <a href="/user/profile/edit" class="btn btn-warning">Cập Nhật Thông Tin</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

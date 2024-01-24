@@ -35,8 +35,7 @@ const authController = {
       });
 
       if (userExists) {
-        console.log('User already exists');
-        return res.status(400).json({ message: 'User already exists' });
+        return res.status(400).json({ responseText: 'Tài khoản đã tồn tại, vui lòng nhập tài khoản khác.' });
       }
 
       const emailExists = await User.findOne({
@@ -46,8 +45,7 @@ const authController = {
       });
 
       if (emailExists) {
-        console.log('Email already exists');
-        return res.status(400).json({ message: 'Email already exists' });
+        return res.status(400).json({ responseText: 'Email đã tồn tại, vui lòng nhập email khác.' });
       }
 
       // Save user
@@ -62,7 +60,7 @@ const authController = {
   generateAccessToken: (user) => {
     return jwt.sign(
       {
-        id: user.id,
+        username: user.Username,
         isAdmin: user.isAdmin,
       },
       process.env.JWT_ACCESS_KEY,
@@ -92,34 +90,18 @@ const authController = {
       });
 
       if (!user) {
-        console.log('User not found');
-        return res.render("error",
-          {
-            statusCode: 404,
-            message: 'Tài khoản không tồn tại',
-            decription:
-              'Tài khoản không tồn tại, vui lòng kiểm tra lại thông tin đăng nhập hoặc đăng ký tài khoản mới',
-          }
-        )
+        return res.status(400).json({ message: 'User does not exist' });
       }
 
       // Check if password is correct
       const validPass = await bcrypt.compare(req.body.password, user.PasswordHash);
 
       if (!validPass) {
-        console.log('Invalid password');
-        return res.render('error',
-          {
-            statusCode: 400,
-            message: 'Mật khẩu không chính xác',
-            decription:
-              'Mật khẩu không chính xác, vui lòng kiểm tra lại thông tin đăng nhập hoặc đăng ký tài khoản mới',
-          })
+        return res.status(400).json({ message: 'Invalid password' });
       }
 
       const accessToken = authController.generateAccessToken(user);
-      console.log(accessToken);
-      //{"token":"\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0YW50cmFuMSIsImlhdCI6MTcwNTcxNDcwOCwiZXhwIjoxNzA1NzUwNzA4fQ.4O6-pjLf_fIJe_1CZHB73x2buHvF2fqk3r4jjaial-0\""}
+
       const refreshToken = authController.generateRefreshToken(user);
       refreshTokens.push(refreshToken);
 
@@ -131,9 +113,12 @@ const authController = {
         sameSite: "strict",
       });
 
+      res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+
+
       const { PasswordHash, ...info } = user.dataValues;
 
-      res.status(200).json({ ...info, accessToken });
+      res.status(200).json({ ...info});
     }
     catch (err) {
       res.status(500).json(err);

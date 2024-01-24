@@ -1,0 +1,88 @@
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="mb-0">Chỉnh Sửa Hồ Sơ</h2>
+                </div>
+                <div class="card-body px-4 py-5">
+                    <form id="profileEditForm">
+                        <!-- Họ và Tên -->
+                        <div class="form-group">
+                            <label for="fullName">Họ và Tên</label>
+                            <input type="text" id="fullName" name="fullName" class="form-control"
+                                value="{{user.FullName}}">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" value="{{user.Email}}">
+                        </div>
+
+                        <!-- Số Điện Thoại -->
+                        <div class="form-group">
+                            <label for="phoneNumber">Số Điện Thoại</label>
+                            <input type="text" id="phoneNumber" name="phoneNumber" class="form-control"
+                                value="{{user.PhoneNumber}}">
+                        </div>
+
+                        <!-- Địa Chỉ -->
+                        <div class="form-group">
+                            <label for="address">Địa Chỉ</label>
+                            <input type="text" id="address" name="address" class="form-control"
+                                value="{{user.Address}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dateOfBirth">Ngày Sinh</label>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control"
+                                value="{{user.DateOfBirth}}">
+                        </div>
+
+                        <!-- Giới Tính -->
+                        <div class="form-group">
+                            <label for="gender">Giới Tính</label>
+                            <select id="gender" name="gender" class="form-control">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                                <div id="editError" class="alert alert-danger d-none"></div>
+                            </div>
+
+                        <div class="text-center">
+                            <button type="button" class="btn btn-secondary mr-2" onclick="history.back()">Quay
+                                Về</button>
+                            <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                        </div>
+                    </form>
+
+                    <!-- Modal Thông Báo Đăng Ký Thành Công -->
+                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Thông Báo</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Cập nhật thành công! Bạn sẽ được chuyển hướng đến trang hồ sơ.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+</script>

@@ -303,5 +303,6 @@ ul.list-item {
 }
 
 ul.sub-menu {
+    width: 150px;
     padding: 0;
 }
