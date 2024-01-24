@@ -13,26 +13,28 @@
                     <li>
                         <a href="/contact" title="">Liên hệ</a>
                     </li>
-                    {{#if isLogin }}
-                    <li class="info">
-                        <img src="https://down-vn.img.susercontent.com/file/de586a64b908254b7fd971d67f97ecfb_tn" alt="">
-                        <span>Dang Duc Ba</span>
+                    {{#if isLoggedIn}}
+                    <li class="info" id="info">
+                        <img src="https://th.bing.com/th/id/R.2d1a55760316675f2d94eb9b8fdf86f3?rik=TpfEwYwRMO%2fUkw&pid=ImgRaw&r=0"
+                            alt="">
+                        <span>{{username}}</span>
                         <div class="arrow"></div>
                         <ul class="sub-menu">
                             <li>
-                                <a href="/profile" title="">Tài khoản</a>
+                                <a href="/user/profile" title="">Tài khoản của tôi</a>
                             </li>
                             <li>
-                                <a href="/logout" title="">Đăng xuất</a>
+                                <a href="/user/orders" title="">Đơn mua</a>
+                            <li>
+                                <a href="/auth/logout" title="">Đăng xuất</a>
                             </li>
                         </ul>
                     </li>
                     {{else}}
-                    <li class="d-flex align-items-center">
-                        <a href="/auth/login" style="padding-right:0px" title="">Đăng nhập</a>
-                        <div class="mx-2" style="border-right: 2px solid hsla(0,0%,100%,.4);
-    height: 0.8125rem;"></div>
-                        <a href="/auth/register" style="padding-left:0px" title="">Đăng ký</a>
+                    <li class="d-flex align-items-center" id="signin-signout">
+                        <a href="/auth/login" style="padding-right:0px" title="" id="login">Đăng nhập</a>
+                        <div class="mx-2" style="border-right: 2px solid hsla(0,0%,100%,.4); height: 0.8125rem;"></div>
+                        <a href="/auth/register" style="padding-left:0px" title="" id="register">Đăng ký</a>
                     </li>
                     {{/if}}
                 </ul>
@@ -41,7 +43,7 @@
     </div>
     <div id="head-body" class="clearfix">
         <div class="wp-inner">
-             <a href="/" id="logo" class="fl-left"><span class="text-white fw-bold fs-3">B3TShop</span></a>
+            <a href="/" id="logo" class="fl-left"><span class="text-white fw-bold fs-3">B3TShop</span></a>
             <div id="search-wp" class="fl-left">
                 <form method="POST" action="">
                     <input type="text" name="s" id="s" placeholder="Nhập từ khóa tìm kiếm tại đây!" />
@@ -54,7 +56,7 @@
                     <span class="phone">0987.654.321</span>
                 </div>
                 <div id="btn-respon" class="fl-right"><i class="fa fa-bars" aria-hidden="true"></i></div>
-               
+
                 <div id="cart-wp" class="fl-right">
                     <div id="btn-cart">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>
