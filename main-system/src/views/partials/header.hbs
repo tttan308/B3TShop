@@ -59,9 +59,18 @@
 
                 <div id="cart-wp" class="fl-right">
                     <div id="btn-cart">
-                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                        <span id="num">2</span>
+                        {{#if isLoggedIn}}
+                        <a href="/cart" title="Giỏ hàng" style="text-decoration: none;">
+                            <i class="fa fa-shopping-cart" aria-hidden="true" style="color: white;"></i>
+                            <span id="num">2</span>
+                        </a>
+                        {{else}}
+                        <a href="/auth/login" title="Đăng nhập" style="text-decoration: none;">
+                            <i class="fa fa-shopping-cart" aria-hidden="true" style="color: white;"></i>
+                        </a>
+                        {{/if}}
                     </div>
+                     {{#if isLoggedIn}}
                     <div id="dropdown">
                         <p class="desc">Có <span>2 sản phẩm</span> trong giỏ hàng</p>
                         <ul class="list-cart">
@@ -80,11 +89,13 @@
                             <p class="title fl-left">Tổng:</p>
                             <p class="price fl-right">18.500.000đ</p>
                         </div>
-                        <dic class="action-cart clearfix">
+                        <div class="action-cart clearfix">
                             <a href="/cart" title="Giỏ hàng" class="view-cart fl-left">Giỏ hàng</a>
                             <a href="/checkout" title="Thanh toán" class="checkout fl-right">Thanh toán</a>
-                        </dic>
+                        </div>
                     </div>
+                    {{/if}}
+
                 </div>
             </div>
         </div>

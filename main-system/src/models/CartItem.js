@@ -4,6 +4,8 @@ module.exports = (sequelize, DataTypes) => {
         CartID: { type: DataTypes.INTEGER },
         ProductID: { type: DataTypes.INTEGER },
         Quantity: { type: DataTypes.INTEGER }
+    },{
+        timestamps: false,
     });
 
     return CartItem;

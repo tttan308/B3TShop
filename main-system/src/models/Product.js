@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     StockQuantity: { type: DataTypes.INTEGER },
     CategoryID: { type: DataTypes.INTEGER },
     ImageURL: { type: DataTypes.STRING },
-    Detail: { type: DataTypes.STRING },
+    Discount: { type: DataTypes.INTEGER },
+    Detail: { type: DataTypes.TEXT },
+  }, {
+    timestamps: false,
   });
 
   return Product;

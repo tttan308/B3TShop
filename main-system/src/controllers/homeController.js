@@ -5,15 +5,16 @@ const categoryController = require("./categoryController");
 const homeController = {
 
   getHomePage: async (req, res) => {
-    const categories = await categoryController.getAllCategory(req, res);
-
+    
     const token = req.cookies.accessToken;
     const username = token ? jwt.decode(token).username : null;
-
+    const categories = await categoryController.getAllCategory(req, res);
+    const get4ProductOfEachCategory = await categoryController.get4ProductOfEachRootCategory(req, res);
     return res.render("home", {
       isLoggedIn: !!token,
       username: username,
-      categories: categories,
+      categories: categories, 
+      get4ProductOfEachCategory: get4ProductOfEachCategory,
     });
 
   },

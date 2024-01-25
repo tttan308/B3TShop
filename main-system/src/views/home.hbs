@@ -6,10 +6,10 @@
                     <div class="item">
                         <img src="images/slider-01.png" alt="">
                     </div>
-                     <div class="item">
+                    <div class="item">
                         <img src="images/slider-01.png" alt="">
                     </div>
-                     <div class="item">
+                    <div class="item">
                         <img src="images/slider-01.png" alt="">
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                                 <a href="/checkout" title="" class="buy-now fl-right">Mua ngay</a>
                             </div>
                         </li>
-                         <li>
+                        <li>
                             <a href="product/detail/1" title="" class="thumb">
                                 <img src="/images/img-pro-01.png">
                             </a>
@@ -131,7 +131,7 @@
                                 <a href="/checkout" title="" class="buy-now fl-right">Mua ngay</a>
                             </div>
                         </li>
-                         <li>
+                        <li>
                             <a href="product/detail/1" title="" class="thumb">
                                 <img src="/images/img-pro-01.png">
                             </a>
@@ -148,137 +148,56 @@
                     </ul>
                 </div>
             </div>
+            {{#each get4ProductOfEachCategory}}
             <div class="section" id="list-product-wp">
                 <div class="section-head">
-                    <h3 class="section-title">Điện thoại</h3>
+                    <h3 class="section-title">{{this.CategoryName}}</h3>
                 </div>
                 <div class="section-detail">
+                    {{#if this.products}}
                     <ul class="list-item clearfix">
+                        {{#each this.products}}
                         <li>
-                            <a href="product/detail/1" title="" class="thumb">
+                            <a href="product/detail/{{this.ProductID}}" title="" class="thumb">
+                                {{#if this.ImageURL}}
+                                <img src="{{this.ImageURL}}">
+                                {{else}}
                                 <img src="images/img-pro-01.png">
+                                {{/if}}
                             </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
+                            <a href="product/detail/{{this.ProductID}}" title=""
+                                class="product-name">{{this.ProductName}}</a>
                             <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
+                                <span class="new">{{formatPrice this.Price}}</span>
+                                {{#if this.Discount}}
+                                <span class="old">{{calculateOldPrice this.Price this.Discount}}</span>
+                                {{/if}}
                             </div>
                             <div class="action clearfix">
                                 <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
                                 <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
                             </div>
                         </li>
-                        <li>
-                            <a href="product/detail/1" title="" class="thumb">
-                                <img src="images/img-pro-01.png">
-                            </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
-                            <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
-                            </div>
-                            <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="product/detail/1" title="" class="thumb">
-                                <img src="images/img-pro-01.png">
-                            </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
-                            <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
-                            </div>
-                            <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="product/detail/1" title="" class="thumb">
-                                <img src="images/img-pro-01.png">
-                            </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
-                            <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
-                            </div>
-                            <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                            </div>
-                        </li>
+                        {{/each}}
                     </ul>
+                    {{else}}
+                    <p>Không có sản phẩm trong danh mục này.</p>
+                    {{/if}}
                 </div>
             </div>
-            <div class="section" id="list-product-wp">
-                <div class="section-head">
-                    <h3 class="section-title">Laptop</h3>
-                </div>
-                <div class="section-detail">
-                    <ul class="list-item clearfix">
-                        <li>
-                            <a href="product/detail/1" title="" class="thumb">
-                                <img src="images/img-pro-01.png">
-                            </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
-                            <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
-                            </div>
-                            <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="product/detail/1" title="" class="thumb">
-                                <img src="images/img-pro-01.png">
-                            </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
-                            <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
-                            </div>
-                            <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="product/detail/1" title="" class="thumb">
-                                <img src="images/img-pro-01.png">
-                            </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
-                            <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
-                            </div>
-                            <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="product/detail/1" title="" class="thumb">
-                                <img src="images/img-pro-01.png">
-                            </a>
-                            <a href="product/detail/1" title="" class="product-name">Motorola Moto G5S Plus</a>
-                            <div class="price">
-                                <span class="new">6.990.000đđ</span>
-                                <span class="old">8.990.000đđ</span>
-                            </div>
-                            <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            {{/each}}
         </div>
-       {{> sidebar}}
+        {{> sidebar}}
     </div>
 </div>
+
+<script>
+    function formatPrice(price) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    }
+
+
+    function calculateOldPrice(price, discount) {
+        return formatPrice(price + (price * discount / 100))
+    }
+</script>

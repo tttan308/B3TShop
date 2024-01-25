@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
         AuthProviderID: { type: DataTypes.STRING },
         AuthProviderToken: { type: DataTypes.STRING },
         DateCreated: { type: DataTypes.DATE }
+    }, {
+        timestamps: false,
     });
 
     return User;

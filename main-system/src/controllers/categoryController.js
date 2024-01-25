@@ -1,21 +1,22 @@
 const db = require('../models');
 const Category = db.categories;
+const Product = db.products;
 
 const categoryController = {
   getAllCategory: async (req, res) => {
     try {
       const categories = await Category.findAll({
-        include: [{
-          model: Category,
-          as: 'Subcategories',
-          attributes: ['CategoryID', 'CategoryName'],
-        }],
-        attributes: ['CategoryID', 'CategoryName'],
+        include: [
+          {
+            model: Category,
+            as: 'Subcategories',
+            attributes: ['CategoryID', 'CategoryName'],
+          }
+        ],
         where: {
           ParentID: null
         }
       });
-
       const result = categories.map((category) => {
         const subcategories = category.Subcategories.map((subcategory) => {
           return {
@@ -34,7 +35,6 @@ const categoryController = {
       return result;
 
     } catch (error) {
-      console.error('Error:', error);
       res.status(500).send('Server Error');
     }
   },
@@ -58,7 +58,6 @@ const categoryController = {
 
       return res.status(200).send(category);
     } catch (error) {
-      console.error('Error:', error);
       res.status(500).send('Server Error');
     }
   },
@@ -67,8 +66,6 @@ const categoryController = {
     try {
       const name = req.body.categoryName;
 
-      console.log(name);
-      
       // Xóa category và subcategories (Xóa subcategories trước)
       const category = await Category.findOne({
         where: {
@@ -94,7 +91,6 @@ const categoryController = {
 
       return res.status(200).send('Delete successfully');
     } catch (error) {
-      console.error('Error:', error);
       res.status(500).send('Server Error');
     }
   },
@@ -160,7 +156,6 @@ const categoryController = {
 
       return res.status(200).send('Update successfully');
     } catch (error) {
-      console.error('Error:', error);
       res.status(500).send('Server Error');
     }
   },
@@ -193,15 +188,102 @@ const categoryController = {
         return subcategory.dataValues.CategoryName;
       });
 
-      console.log(result);
-      
       return res.status(200).send(result);
 
     } catch (error) {
-      console.error('Error:', error);
       res.status(500).send('Server Error');
     }
   },
+
+  getCategoryById: async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      const category = await Category.findByPk(id);
+
+      if (!category) {
+        return res.status(404).send('Category not found');
+      }
+
+      const listOfProducts = await Product.findAll({
+        where: {
+          CategoryID: id
+        }
+      });
+
+      const result = {
+        CategoryName: category.dataValues.CategoryName,
+        listOfProducts: listOfProducts.map((product) => {
+          return {
+            ProductID: product.dataValues.ProductID,
+            ProductName: product.dataValues.ProductName,
+            Price: product.dataValues.Price,
+            ImageURL: product.dataValues.ImageURL,
+          }
+        })
+      }
+
+      return res.status(200).send(category);
+    } catch (error) {
+      res.status(500).send('Server Error');
+    }
+  },
+
+  get4ProductOfEachRootCategory: async (req, res) => {
+    try {
+      // Lấy danh sách các category gốc
+      const categories = await Category.findAll({
+        where: {
+          ParentID: null
+        }
+      });
+
+      const result = [];
+
+      // Lấy 4 sản phẩm của mỗi category gốc
+      const promises = categories.map(async (category) => {
+        // Với mỗi category gốc, hãy tìm các subcategory của nó, sau đó gom chung lại các sub và lấy 4 sản phẩm
+        const subcategories = await Category.findAll({
+          where: {
+            ParentID: category.CategoryID
+          }
+        });
+
+        const subcategoriesID = subcategories.map((subcategory) => {
+          return subcategory.CategoryID;
+        });
+
+        // Lấy 4 sản phẩm mới nhất của các subcategory
+        const products = await Product.findAll({
+          where: {
+            CategoryID: subcategoriesID,
+          },
+          limit: 4,
+        });
+
+        result.push({
+          CategoryID: category.CategoryID,
+          CategoryName: category.CategoryName,
+          products: products.map((product) => {
+            return {
+              ProductID: product.ProductID,
+              ProductName: product.ProductName,
+              Price: product.Price,
+              Discount: product.Discount,
+              ImageURL: product.ImageURL,
+            }
+          })
+        });
+      });
+
+      await Promise.all(promises);
+
+      return result;
+    } catch (error) {
+      res.status(500).send('Server Error');
+    }
+  },
+
 };
 
 module.exports = categoryController;

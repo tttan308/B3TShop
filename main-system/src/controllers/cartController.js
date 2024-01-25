@@ -1,0 +1,138 @@
+const db = require('../models');
+const Cart = db.carts;
+const CartItem = db.cartItems;
+const jwt = require("jsonwebtoken");
+const User = db.users;
+
+const cartController = {
+    addCart: async (req, res) => {
+        try {
+            const { productId, quantity } = req.body;
+            
+            const token = req.cookies.accessToken;
+            const username = token ? jwt.decode(token).username : null;
+
+            if (!token) {
+                return res.redirect("/auth/login");
+            }
+
+            const user = await User.findOne({
+                where: {
+                    Username: username,
+                },
+            });
+
+            if (!user) {
+                return res.redirect("/auth/login");
+            }
+
+            const cart = await Cart.findOne({
+                where: {
+                    UserID: user.UserID,
+                },
+            });
+
+            if (!cart) {
+                const newCart = await Cart.create({
+                    UserID: user.UserID,
+                    DateCreated: new Date(),
+                });
+
+                await CartItem.create({
+                    CartID: newCart.CartID,
+                    ProductID: parseInt(productId),
+                    Quantity: parseInt(quantity),
+                });
+                
+                console.log("Add to cart successfully");
+
+                return res.status(200).send("Add to cart successfully");
+            }
+            else {
+                const cartItem = await CartItem.findOne({
+                    where: {
+                        CartID: cart.CartID,
+                        ProductID: parseInt(productId),
+                    },
+                });
+
+                console.log(cartItem);
+
+                if (!cartItem) {
+                    await CartItem.create({
+                        CartID: cart.CartID,
+                        ProductID: parseInt(productId),
+                        Quantity: parseInt(quantity),
+                    });
+                } else {
+                    await CartItem.update(
+                        {
+                            Quantity: cartItem.Quantity + parseInt(quantity),
+                        },
+                        {
+                            where: {
+                                CartID: cart.CartID,
+                                ProductID: parseInt(productId),
+                            },
+                        }
+                    );
+                }
+            }
+
+            return res.status(200).send("Add to cart successfully");
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    getCartPage: async (req, res) => {
+        try {
+            const token = req.cookies.accessToken;
+            const username = token ? jwt.decode(token).username : null;
+
+            if (!token) {
+                return res.redirect("/auth/login");
+            }
+
+            const user = await User.findOne({
+                where: {
+                    Username: username,
+                },
+            });
+
+            if (!user) {
+                return res.redirect("/auth/login");
+            }
+
+            const cart = await Cart.findOne({
+                where: {
+                    UserID: user.UserID,
+                },
+            });
+
+            if (!cart) {
+                return res.render("cart", {
+                    isLoggedIn: !!token,
+                    username: username,
+                    cartItems: [],
+                });
+            }
+
+            const cartItems = await CartItem.findAll({
+                where: {
+                    CartID: cart.CartID,
+                },
+            });
+
+            return res.render("cart", {
+                isLoggedIn: !!token,
+                username: username,
+                cartItems: cartItems,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+};
+
+module.exports = cartController;

@@ -5,6 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         ProductID: { type: DataTypes.INTEGER },
         Quantity: { type: DataTypes.INTEGER },
         Price: { type: DataTypes.DECIMAL(10, 2) }
+    },{
+        timestamps: false,
     });
 
     return OrderDetail;

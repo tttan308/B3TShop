@@ -7,14 +7,14 @@
             <ul class="list-item">
                 {{#each categories}}
                 <li>
-                    <a href="/category/{{this.CategoryID}}" title=""
+                    <a href="/categories/{{this.CategoryID}}" title=""
                         class="d-flex justify-content-between align-items-center"> <span>{{this.CategoryName}}</span> <i
                             class="fa-solid fa-chevron-right"></i></a>
                     {{#if this.subcategories}}
                     <ul class="sub-menu">
                         {{#each this.subcategories}}
                         <li>
-                            <a href="/category/{{this.CategoryID}}" title="">{{this.CategoryName}}</a>
+                            <a href="/categories/{{this.CategoryID}}" title="">{{this.CategoryName}}</a>
                         </li>
                         {{/each}}
                     </ul>
