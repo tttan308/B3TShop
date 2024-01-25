@@ -36,6 +36,7 @@ module.exports = {
     const deletedCategory = await Category.findAndDelete(categoryId);
     return deletedCategory;
   },
+
   getLevel1Category: async () => {
     const level1Categories = await Category.findAll({
       where: {
