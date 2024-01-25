@@ -1,0 +1,264 @@
+<div class="container">
+    <h1>Quản Lý Danh Mục</h1>
+    <button class="btn btn-primary mb-3" onclick="showAddCategoryModal()">Thêm Danh Mục</button>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Danh Mục</th>
+                <th>Danh mục con</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each categories}}
+            <tr>
+                <td>{{this.CategoryName}}</td>
+                <td>
+                    <ul>
+                        {{#each this.subcategories}}
+                        <li>{{this.CategoryName}}</li>
+                        {{/each}}
+                    </ul>
+                </td>
+                <td>
+                    <button class="btn btn-info" onclick="showEditCategoryModal('{{this.CategoryName}}')">Sửa</button>
+                    <button class="btn btn-danger"
+                        onclick="showDeleteConfirmationModal('{{this.CategoryName}}')">Xóa</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal" id="addCategoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm Danh Mục</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addCategoryForm">
+                    <div class="form-group">
+                        <label for="categoryName">Tên Danh Mục:</label>
+                        <input type="text" class="form-control" id="categoryName" placeholder="Nhập tên danh mục">
+                    </div>
+                    <div class="form-group">
+                        <label for="subcategories">Danh mục con:</label>
+                        <div id="subcategoriesContainer">
+                            <input type="text" class="form-control" id="subcategories"
+                                placeholder="Nhập các danh mục con">
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addSubcategoryInput()">+</button>
+                        <small class="form-text text-muted">Nhập nhiều subcategories, sử dụng dấu + để thêm mới.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary" form="addCategoryForm">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteConfirmationModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác Nhận Xóa</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa danh mục <span id="categoryNameToDelete"></span> không?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" onclick="deleteCategory()">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal" id="editCategoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sửa Danh Mục</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editCategoryForm">
+                    <div class="form-group">
+                        <label for="editCategoryName">Tên Danh Mục:</label>
+                        <input type="text" class="form-control" id="editCategoryName" placeholder="Nhập tên danh mục"
+                            value="{{this.CategoryName}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSubcategories">Danh mục con:</label>
+                        <div id="editSubcategoriesContainer">
+                           
+                        </div>
+                        <small class="form-text text-muted">Nhập nhiều danh mục con, sử dụng dấu + để thêm mới.</small>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="addEditSubcategoryInput()">+</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeEditModal()">Đóng</button>
+                <button type="submit" class="btn btn-primary" form="editCategoryForm">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showEditCategoryModal(categoryName) {
+        $.ajax({
+            url: 'categories/get',
+            type: 'GET',
+            contentType: 'application/json',
+            data: { categoryName: categoryName },
+            success: function (response) {
+                console.log(response);
+                $('#editCategoryName').val(response.CategoryName);
+                $('#editSubcategoriesContainer').empty();
+                response.subcategories.forEach(subcategory => {
+                    var input = document.createElement("input");
+                    input.type = "text";
+                    input.className = "form-control";
+                    input.placeholder = "Nhập tên danh mục con";
+                    input.style.marginTop = "10px";
+                    input.value = subcategory;
+
+                    $('#editSubcategoriesContainer').append(input);
+                });
+                $('#editCategoryModal').modal('show');
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function addEditSubcategoryInput() {
+        var editSubcategoriesContainer = document.getElementById("editSubcategoriesContainer");
+        var input = document.createElement("input");
+        input.type = "text";
+        input.className = "form-control";
+        input.placeholder = "Nhập tên danh mục con";
+        input.style.marginTop = "10px";
+        editSubcategoriesContainer.appendChild(input);
+    }
+
+    document.getElementById('editCategoryForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var categoryName = document.getElementById('editCategoryName').value;
+        var subcategoriesInputs = document.getElementById('editSubcategoriesContainer').getElementsByTagName('input');
+        var subcategories = Array.from(subcategoriesInputs).map(input => input.value);
+
+        var data = {
+            CategoryName: categoryName,
+            subcategories: subcategories.filter(subcategory => subcategory.trim() !== '')
+        };
+
+        console.log(data);
+        $.ajax({
+            url: 'categories/update ',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                console.log(response);
+                $('#editCategoryModal').modal('hide');
+                // reload current page
+                location.reload();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+
+    function closeEditModal() {
+        $('#editCategoryModal').modal('hide');
+    }
+</script>
+
+<script>
+    function addSubcategoryInput() {
+        var subcategoriesContainer = document.getElementById("subcategoriesContainer");
+        var input = document.createElement("input");
+        input.type = "text";
+        input.className = "form-control";
+        input.placeholder = "Nhập subcategories";
+        subcategoriesContainer.appendChild(input);
+    }
+
+    function showAddCategoryModal() {
+        $('#addCategoryModal').modal('show');
+    }
+
+    function showDeleteConfirmationModal(categoryName) {
+        $('#categoryNameToDelete').text(categoryName);
+        $('#deleteConfirmationModal').modal('show');
+    }
+
+    function deleteCategory() {
+        var categoryName = $('#categoryNameToDelete').text();
+
+        $.ajax({
+            url: 'categories/delete',
+            type: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify({ categoryName: categoryName }),
+            success: function (response) {
+                console.log(response);
+                $('#deleteConfirmationModal').modal('hide');
+                // reload current page
+                location.reload();
+
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    document.getElementById('addCategoryForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var categoryName = document.getElementById('categoryName').value;
+        var subcategoriesInputs = document.getElementById('subcategoriesContainer').getElementsByTagName('input');
+        var subcategories = Array.from(subcategoriesInputs).map(input => input.value);
+
+        var data = {
+            CategoryName: categoryName,
+            subcategories: subcategories.filter(subcategory => subcategory.trim() !== '')
+        };
+
+        console.log(data);
+        $.ajax({
+            url: 'categories/add',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                console.log(response);
+                $('#addCategoryModal').modal('hide');
+                // reload current page
+                location.reload();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+
+</script>

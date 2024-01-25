@@ -15,6 +15,12 @@ const initAuthRoute = (app) => {
 
   route.post("/login", authController.loginUser);
 
+  route.get("/login-admin", (req, res) => {
+    res.render("login-admin", { layout: false });
+  });
+
+  route.post("/login-admin", authController.loginAdmin);
+
   route.get("/refresh", authController.requestRefreshToken);
 
   route.get("/logout", authorMiddleware.verifyToken, (req, res) => {

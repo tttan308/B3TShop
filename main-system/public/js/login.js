@@ -60,9 +60,9 @@
     e.preventDefault();
     $("#loginError").remove();
 
-    const form = $(this); // Capture the form context
+    const form = $(this); 
     const username = $('[name="username"]').val();
-    const password = $('[name="Mật khẩu"]').val(); // Make sure the name matches the form
+    const password = $('[name="password"]').val(); 
 
     $.ajax({
       url: '/auth/login',
@@ -78,7 +78,7 @@
           if (counter <= 0) {
             clearInterval(interval);
             $('#loginModal').modal('hide');
-            window.location.href = '/'; // Chuyển hướng về trang chủ
+            window.location.href = '/'; 
           }
         }, 1000);
       },

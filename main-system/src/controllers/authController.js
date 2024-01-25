@@ -125,6 +125,56 @@ const authController = {
     }
   },
 
+  // LOGIN ADMIN
+  loginAdmin: async (req, res) => {
+    console.log(req.body);
+    try {
+      // Check if user exists
+      const user = await User.findOne({
+        where: {
+          Username: req.body.username,
+          isAdmin: true,
+        }
+      });
+
+      if (!user) {
+        return res.status(400).json({ message: 'User does not exist' });
+      }
+
+      // Check if password is correct
+      const validPass = await bcrypt.compare(req.body.password, user.PasswordHash);
+
+      if (!validPass) {
+        return res.status(400).json({ message: 'Invalid password' });
+      }
+
+      if (!user.isAdmin) {
+        return res.status(400).json({ message: 'User is not admin' });
+      }
+
+      const accessToken = authController.generateAccessToken(user);
+
+      const refreshToken = authController.generateRefreshToken(user);
+      refreshTokens.push(refreshToken);
+
+      //STORE REFRESH TOKEN IN COOKIE
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+
+      const { PasswordHash, ...info } = user.dataValues;
+
+      res.status(200).json({ ...info});
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+    
   // REFRESH TOKEN
   requestRefreshToken: async (req, res) => {
     //Take refresh token from user

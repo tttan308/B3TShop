@@ -3,6 +3,8 @@ const initWebRoute = require("./web");
 const initCartRoute = require("./cart");
 const initProductRoute = require("./product");
 const initUserRoutes = require("./user");
+const initAdminRoute = require("./admin");
+const initCategoryRoute = require("./category");
 
 module.exports = (app) => {
   initWebRoute(app);  
@@ -10,4 +12,6 @@ module.exports = (app) => {
   initCartRoute(app);
   initProductRoute(app);
   initUserRoutes(app);
+  initAdminRoute(app);
+  initCategoryRoute(app);
 };
