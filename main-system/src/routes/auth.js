@@ -4,13 +4,13 @@ const authorMiddleware = require("../middlewares/authorMiddleware");
 
 const initAuthRoute = (app) => {
   route.get("/register", (req, res) => {
-    res.render("register");
+    res.render("register", { layout: false });
   });
 
   route.post("/register", authController.registerUser);
 
   route.get("/login", (req, res) => {
-    res.render("login");
+    res.render("login", { layout: false });
   });
 
   route.post("/login", authController.loginUser);
