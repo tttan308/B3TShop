@@ -4,7 +4,7 @@ const route = express.Router();
 const { verifyToken } = require("../middlewares/authorMiddleware");
 
 const initCategoryRoute = (app) => {
-    route.get("/:id", categoryController.getCategoryById);
+    route.get("/:id?", categoryController.getCategoryById);
     app.use("/categories", route);
 }
 
