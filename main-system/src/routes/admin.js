@@ -15,11 +15,12 @@ const initAdminRoute = (app) => {
   route.delete("/categories/delete", verifyToken, categoryController.deleteCategory);
   route.put("/categories/update", verifyToken, categoryController.updateCategory);
 
+  // Route quản lý sản phẩm
   route.get("/product/add", verifyToken, adminProductController.getAddProductPage);
   route.get("/product/list", verifyToken, adminProductController.getListProductPage);
   route.post("/product/add", verifyToken, uploadProduct.single("image"), adminProductController.addProduct);
-
-  // Route quản lý sản phẩm
+  route.get("/product/edit/:id", verifyToken, adminProductController.getEditProductPage);
+  route.post("/product/edit/:id", verifyToken, uploadProduct.single("image"), adminProductController.addProduct);
 
   // Route quản lý đơn hàng
 
