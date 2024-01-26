@@ -6,7 +6,8 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     //TODO: change file name to product id
-    cb(null, file.originalname);
+    cd(null, req.body.ProductID + ".jpg");
+    //cb(null, file.originalname);
   },
 });
 
