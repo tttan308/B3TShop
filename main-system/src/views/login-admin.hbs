@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: hsl(0, 0%, 97%);
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            padding-top: 5%;
+            padding-bottom: 5%;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container login-container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Admin Login</div>
+                    <div class="card-body">
+                        <form id="loginAdminForm" action="/admin/login" method="post">
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary mt-3" onclick="history.back()">Quay
+                                    Lại</button>
+                                <button type="button" class="btn btn-primary" onclick="sendLoginData()">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Thông Báo -->
+        <div class="modal fade" id="loginAdminModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel">Thông Báo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Đăng nhập thành công! Bạn sẽ được chuyển hướng trong <span id="countdown">3</span> giây.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function sendLoginData() {
+            const form = $('#loginAdminForm');
+            $('#loginAdminError').remove();
+            console.log(form);
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const data = JSON.stringify({ username: username, password: password });
+
+            $.ajax({
+                url: '/auth/login-admin',
+                type: 'POST',
+                contentType: 'application/json',
+                data: data,
+                success: function (response) {
+                    $('#loginAdminModal').modal('show');
+                    let counter = 3;
+                    const interval = setInterval(function () {
+                        counter--;
+                        $('#countdown').text(counter);
+                        if (counter <= 0) {
+                            clearInterval(interval);
+                            $('#loginAdminModal').modal('hide');
+                            window.location.href = '/admin';
+                        }
+                    }, 1000);
+                },
+                error: function (error) {
+                    console.log(error);
+                    form.after('<p id="loginAdminError" class="text-danger">Tài khoản hoặc mật khẩu không đúng</p>');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

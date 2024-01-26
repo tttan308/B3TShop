@@ -3,9 +3,7 @@ const Category = require("../models/Category");
 module.exports = {
   // Get all categories
   getAllCategories: async () => {
-    const categories = await Category.findAll({
-      attributes: { exclude: ["createdAt", "updatedAt"] },
-    });
+    const categories = await Category.findAll();
     return categories;
   },
 

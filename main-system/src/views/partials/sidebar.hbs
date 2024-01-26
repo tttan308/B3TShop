@@ -3,42 +3,24 @@
         <div class="section-head">
             <h3 class="section-title">Danh mục sản phẩm</h3>
         </div>
-        <div class="secion-detail">
+        <div class="section-detail">
             <ul class="list-item">
+                {{#each categories}}
                 <li>
-                    <a href="/category/phone" title="" class="d-flex justify-content-between align-items-center"> <span>Điện thoại</span> <i class="fa-solid fa-chevron-right"></i></a>
+                    <a href="/categories/{{this.CategoryID}}" title=""
+                        class="d-flex justify-content-between align-items-center"> <span>{{this.CategoryName}}</span> <i
+                            class="fa-solid fa-chevron-right"></i></a>
+                    {{#if this.subcategories}}
                     <ul class="sub-menu">
+                        {{#each this.subcategories}}
                         <li>
-                            <a href="" title="">Iphone</a>
+                            <a href="/categories/{{this.CategoryID}}" title="">{{this.CategoryName}}</a>
                         </li>
-                        <li>
-                            <a href="" title="" class="d-flex justify-content-between align-items-center"> <span>Samsung</span> <i class="fa-solid fa-chevron-right"></i></a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="" title="">Iphone X</a>
-                                </li>
-                                <li>
-                                    <a href="" title="">Iphone 8</a>
-                                </li>
-                                <li>
-                                    <a href="" title="">Iphone 8 Plus</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="" title="">Oppo</a>
-                        </li>
-                        <li>
-                            <a href="" title="">Bphone</a>
-                        </li>
+                        {{/each}}
                     </ul>
+                    {{/if}}
                 </li>
-                <li>
-                    <a href="" title="">Máy tính bảng</a>
-                </li>
-                <li>
-                    <a href="" title="">Laptop</a>
-                </li>
+                {{/each}}
             </ul>
         </div>
     </div>
@@ -104,3 +86,7 @@
         </div>
     </div>
 </div>
+
+<script>
+
+</script>

@@ -5,6 +5,9 @@ module.exports = (sequelize, DataTypes) => {
         OrderDate: { type: DataTypes.DATE },
         TotalAmount: { type: DataTypes.DECIMAL(10, 2) },
         Status: { type: DataTypes.STRING }
+    },
+    {
+        timestamps: false
     });
 
     return Order;

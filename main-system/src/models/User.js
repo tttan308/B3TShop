@@ -5,12 +5,17 @@ module.exports = (sequelize, DataTypes) => {
         PasswordHash: { type: DataTypes.STRING },
         FullName: { type: DataTypes.STRING },
         Email: { type: DataTypes.STRING },
+        Address: { type: DataTypes.STRING },
+        DateOfBirth: { type: DataTypes.DATE },
+        Gender : { type: DataTypes.STRING },
         PhoneNumber: { type: DataTypes.STRING },
         isAdmin: { type: DataTypes.BOOLEAN },
         AuthenticationType: { type: DataTypes.STRING },
         AuthProviderID: { type: DataTypes.STRING },
         AuthProviderToken: { type: DataTypes.STRING },
         DateCreated: { type: DataTypes.DATE }
+    }, {
+        timestamps: false,
     });
 
     return User;
