@@ -36,11 +36,6 @@ const initAdminRoute = (app) => {
     verifyToken,
     adminProductController.getListProductPage
   );
-  route.get(
-    "/category",
-    verifyToken,
-    adminProductController.getCategoryProductPage
-  );
 
   // Route quản lý sản phẩm
 

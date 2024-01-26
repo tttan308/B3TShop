@@ -5,10 +5,12 @@ dotenv.config();
 const cookieParser = require("cookie-parser");
 const { engine } = require("express-handlebars");
 const app = express();
-const handlebars = require('handlebars');
+const handlebars = require("handlebars");
 
 const customErr = require("./src/models/customErr");
-
+const passport = require("passport");
+require("./src/middlewares/passport-gg");
+var session = require("express-session");
 // Config
 app.use(cors());
 app.use(cookieParser());
@@ -23,51 +25,84 @@ app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.set("views", "./src/views");
 
-handlebars.registerHelper('formatPrice', function (price) {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+// Session
+app.use(
+  session({
+    secret: "ducba",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser(async (user, done) => {
+  try {
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
 });
 
-handlebars.registerHelper('calculateOldPrice', function (price, discount) {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price * 100 / (100 - discount));
+handlebars.registerHelper("formatPrice", function (price) {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(price);
 });
 
-handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+handlebars.registerHelper("calculateOldPrice", function (price, discount) {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format((price * 100) / (100 - discount));
+});
+
+handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
   switch (operator) {
-    case '==':
-      return (v1 == v2) ? options.fn(this) : options.inverse(this);
-    case '===':
-      return (v1 === v2) ? options.fn(this) : options.inverse(this);
-    case '<':
-      return (v1 < v2) ? options.fn(this) : options.inverse(this);
-    case '<=':
-      return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-    case '>':
-      return (v1 > v2) ? options.fn(this) : options.inverse(this);
-    case '>=':
-      return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+    case "==":
+      return v1 == v2 ? options.fn(this) : options.inverse(this);
+    case "===":
+      return v1 === v2 ? options.fn(this) : options.inverse(this);
+    case "<":
+      return v1 < v2 ? options.fn(this) : options.inverse(this);
+    case "<=":
+      return v1 <= v2 ? options.fn(this) : options.inverse(this);
+    case ">":
+      return v1 > v2 ? options.fn(this) : options.inverse(this);
+    case ">=":
+      return v1 >= v2 ? options.fn(this) : options.inverse(this);
     default:
       return options.inverse(this);
   }
 });
 
-handlebars.registerHelper('calculateTotalPrice', function (price, quantity) {
+handlebars.registerHelper("calculateTotalPrice", function (price, quantity) {
   let totalPrice = price * quantity;
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice);
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(totalPrice);
 });
 
-handlebars.registerHelper('calculateTotalCartPrice', function (cartItems) {
+handlebars.registerHelper("calculateTotalCartPrice", function (cartItems) {
   let total = 0;
   if (Array.isArray(cartItems)) {
-    cartItems.forEach(item => {
+    cartItems.forEach((item) => {
       let price = parseFloat(item.Price);
       total += price * item.Quantity;
     });
   }
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(total);
 });
-
-
-
 
 // Routes
 const initRoutes = require("./src/routes");

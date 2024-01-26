@@ -1,5 +1,5 @@
 <div class="container">
-    <h1>Quản Lý Danh Mục</h1>
+    <h1 class="text-center mt-5">Quản Lý Danh Mục</h1>
     <button class="btn btn-primary mb-3" onclick="showAddCategoryModal()">Thêm Danh Mục</button>
 
     <table class="table table-striped">
@@ -38,7 +38,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Thêm Danh Mục</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="addCategoryForm">
@@ -58,7 +58,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 <button type="submit" class="btn btn-primary" form="addCategoryForm">Lưu</button>
             </div>
         </div>
@@ -71,13 +71,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Xác Nhận Xóa</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Bạn có chắc chắn muốn xóa danh mục <span id="categoryNameToDelete"></span> không?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-danger" onclick="deleteCategory()">Xóa</button>
             </div>
         </div>
@@ -90,7 +90,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Sửa Danh Mục</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="editCategoryForm">
@@ -110,7 +110,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeEditModal()">Đóng</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeEditModal()">Đóng</button>
                 <button type="submit" class="btn btn-primary" form="editCategoryForm">Lưu</button>
             </div>
         </div>
