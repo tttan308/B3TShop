@@ -1,33 +1,28 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light custom-navbar">
-    <div class="container">
-        <a class="navbar-brand" href="#">Admin</a>
+ <nav class="topnav shadow navbar-light bg-white d-flex">
+            <div class="navbar-brand"><a href="?" class="text-decoration-none">B3TSHOP ADMIN</a></div>
+            <div class="nav-right ">
+                <div class="btn-group mr-auto">
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="plus-icon fas fa-plus-circle"></i>
+                        </button>
+                       <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/admin/product/list">Sản phẩm</a>
+                        <a class="dropdown-item" href="/admin/categories">Danh mục</a>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="d-flex justify-content-between align-items-center flex-grow-1">
-
-            <div class="navbar-collapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/users">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/orders">Orders</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/products">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/categories">Categories</a>
-                    </li>
-                </ul>
+                <div class="btn-group">
+                    <div class="dropdown">
+                        <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        DUC BA
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Tài khoản</a>
+                            <a class="dropdown-item" href="#">Thoát</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div>
-                <ul class="navbar-nav">
-                    <li class="info " id="info">
-                        <a class="nav-link" href="/auth/logout" title="">Đăng xuất</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</nav>
+        </nav>
