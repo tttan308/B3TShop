@@ -4,38 +4,20 @@ const adminProductController = require("../controllers/adminProductController");
 const { verifyToken } = require("../middlewares/authorMiddleware");
 const categoryController = require("../controllers/categoryController");
 const route = express.Router();
+const { uploadProduct } = require("../middlewares/uploadImage");
 
 const initAdminRoute = (app) => {
   // Route quản lý danh mục
   route.get("/", homeController.getAdminPage);
   route.get("/categories", verifyToken, homeController.getCategoriesPage);
-  route.get(
-    "/categories/get",
-    verifyToken,
-    categoryController.getCategoryByName
-  );
+  route.get("/categories/get", verifyToken, categoryController.getCategoryByName);
   route.post("/categories/add", verifyToken, categoryController.addCategory);
-  route.delete(
-    "/categories/delete",
-    verifyToken,
-    categoryController.deleteCategory
-  );
-  route.put(
-    "/categories/update",
-    verifyToken,
-    categoryController.updateCategory
-  );
+  route.delete("/categories/delete", verifyToken, categoryController.deleteCategory);
+  route.put("/categories/update", verifyToken, categoryController.updateCategory);
 
-  route.get(
-    "/product/add",
-    verifyToken,
-    adminProductController.getAddProductPage
-  );
-  route.get(
-    "/product/list",
-    verifyToken,
-    adminProductController.getListProductPage
-  );
+  route.get("/product/add", verifyToken, adminProductController.getAddProductPage);
+  route.get("/product/list", verifyToken, adminProductController.getListProductPage);
+  route.post("/product/add", verifyToken, uploadProduct.single("image"), adminProductController.addProduct);
 
   // Route quản lý sản phẩm
 

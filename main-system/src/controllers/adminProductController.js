@@ -1,33 +1,34 @@
-const customErr = require("../models/customErr");
-const jwt = require("jsonwebtoken");
+const db = require("../models");
+const Product = db.products;
+const fs = require("fs");
+const path = require("path");
+
 const adminProductController = {
   getAddProductPage: async (req, res) => {
-    try {
-      // const token = req.cookies.accessToken;
-      // const username1 = token ? jwt.decode(token).username : null;
-
-      // if (!token) {
-      //   return res.redirect("/auth/login-admin");
-      // } else {
-      res.render("add-product-page", { layout: "admin" });
-      // }
-    } catch (error) {
-      next(new customErr(error.message, 505));
-    }
+    res.render("add-product-page", { layout: "admin" });
   },
   getListProductPage: async (req, res) => {
-    try {
-      // const token = req.cookies.accessToken;
-      // const username1 = token ? jwt.decode(token).username : null;
+    res.render("list-product-page", { layout: "admin" });
+  },
 
-      // if (!token) {
-      //   return res.redirect("/auth/login-admin");
-      // } else {
-      res.render("list-product-page", { layout: "admin" });
-      // }
-    } catch (error) {
-      next(new customErr(error.message, 505));
-    }
+  addProduct: async (req, res) => {
+    const { ProductName, Price, Detail, CategoryID } = req.body;
+    const newProduct = await Product.create({
+      ProductName,
+      Price,
+      Detail,
+      CategoryID,
+    });
+
+    // //rename image to productID
+    const oldPath = path.join(__dirname, `../../public/images/products/${req.file.filename}`);
+    const newPath = path.join(__dirname, `../../public/images/products/${newProduct.ProductID}.jpg`);
+    fs.rename(oldPath, newPath, function (err) {
+      if (err) throw err;
+      console.log("File Renamed.");
+    });
+
+    res.render("add-product-page", { layout: "admin", message: "Add product successfully" });
   },
 };
 
