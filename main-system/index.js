@@ -66,7 +66,20 @@ handlebars.registerHelper('calculateTotalCartPrice', function (cartItems) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
 });
 
+handlebars.registerHelper('calcOldPrice', function (price, discount) {
+  const oldPrice = parseFloat(price) / (1 - discount / 100);
+  return oldPrice.toFixed(2);
+});
 
+handlebars.registerHelper('eachPagination', function (totalPages, options) {
+  let result = '';
+
+  for (let i = 1; i <= totalPages; i++) {
+    result += options.fn(i);
+  }
+
+  return result;
+});
 
 
 // Routes

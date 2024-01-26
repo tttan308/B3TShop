@@ -7,7 +7,7 @@
             <ul class="list-item">
                 {{#each categories}}
                 <li>
-                    <a href="/categories/{{this.CategoryID}}" title=""
+                    <a href="/categories/{{this.CategoryID}}?page=1" title=""
                         class="d-flex justify-content-between align-items-center"> <span>{{this.CategoryName}}</span> <i
                             class="fa-solid fa-chevron-right"></i></a>
                     {{#if this.subcategories}}
