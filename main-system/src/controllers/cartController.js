@@ -3,6 +3,7 @@ const Cart = db.carts;
 const CartItem = db.cartItems;
 const jwt = require("jsonwebtoken");
 const User = db.users;
+const Product = db.products;
 
 const cartController = {
     addCart: async (req, res) => {
@@ -110,6 +111,7 @@ const cartController = {
                 },
             });
 
+            
             if (!cart) {
                 return res.render("cart", {
                     isLoggedIn: !!token,
@@ -124,11 +126,85 @@ const cartController = {
                 },
             });
 
+            const result = [];
+
+            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID, 
+            //result chỉ lấy ẢNH SẢN PHẨM	TÊN SẢN PHẨM	GIÁ SẢN PHẨM	SỐ LƯỢNG	THÀNH TIỀN\
+            for (let i = 0; i < cartItems.length; i++) {
+                const product = await Product.findByPk(cartItems[i].dataValues.ProductID);
+                if(!product) {
+                    continue;
+                }
+                const safeData = Object.assign({}, product.dataValues);
+                result.push({
+                    ...safeData,
+                    Quantity: cartItems[i].Quantity,
+                });
+            }
+
+            //return res.json(result);
             return res.render("cart", {
                 isLoggedIn: !!token,
                 username: username,
-                cartItems: cartItems,
+                cartItems: result,
             });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    getCartItemsDetail: async (req, res) => {
+        try {
+            const token = req.cookies.accessToken;
+            const username = token ? jwt.decode(token).username : null;
+
+            if (!token) {
+                return res.redirect("/auth/login");
+            }
+
+            const user = await User.findOne({
+                where: {
+                    Username: username,
+                },
+            });
+
+            if (!user) {
+                return res.redirect("/auth/login");
+            }
+
+            const cart = await Cart.findOne({
+                where: {
+                    UserID: user.UserID,
+                },
+            });
+
+            if (!cart) {
+                return [];
+            }
+
+            const cartItems = await CartItem.findAll({
+                where: {
+                    CartID: cart.CartID,
+                },
+            });
+
+            const result = [];
+
+            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID, 
+            //result chỉ lấy ẢNH SẢN PHẨM	TÊN SẢN PHẨM	GIÁ SẢN PHẨM	SỐ LƯỢNG	THÀNH TIỀN\
+            for (let i = 0; i < cartItems.length; i++) {
+                const product = await Product.findByPk(cartItems[i].dataValues.ProductID);
+                if(!product) {
+                    continue;
+                }
+                const safeData = Object.assign({}, product.dataValues);
+                result.push({
+                    ...safeData,
+                    Quantity: cartItems[i].Quantity,
+                });
+            }
+
+            return result;
         } catch (error) {
             console.log(error);
         }

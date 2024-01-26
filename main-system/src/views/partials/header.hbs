@@ -70,30 +70,37 @@
                         </a>
                         {{/if}}
                     </div>
-                     {{#if isLoggedIn}}
+                    {{#if isLoggedIn}}
                     <div id="dropdown">
-                        <p class="desc">Có <span>2 sản phẩm</span> trong giỏ hàng</p>
+                        <p class="desc">Có <span>{{shoppingCart.length}} sản phẩm</span> trong giỏ hàng</p>
                         <ul class="list-cart">
+                            {{#each shoppingCart}}
                             <li class="clearfix">
                                 <a href="" title="" class="thumb fl-left">
-                                    <img src="images/img-pro-01.png" alt="" />
+                                    {{#if this.ImageURL}}
+                                    <img src="{{this.ImageURL}}" alt="{{this.ProductName}}" />
+                                    {{else}}
+                                    <img src="/images/img-pro-01.png" alt="{{this.ProductName}}" />
+                                    {{/if}}
                                 </a>
                                 <div class="info fl-right">
-                                    <a href="" title="" class="product-name">Sony Express X6</a>
-                                    <p class="price">6.250.000đ</p>
-                                    <p class="qty">Số lượng: <span>1</span></p>
+                                    <a href="" title="" class="product-name">{{this.ProductName}}</a>
+                                    <p class="price">{{formatPrice this.Price}}</p>
+                                    <p class="qty">Số lượng: <span>{{this.Quantity}}</span></p>
                                 </div>
                             </li>
+                            {{/each}}
                         </ul>
                         <div class="total-price clearfix">
                             <p class="title fl-left">Tổng:</p>
-                            <p class="price fl-right">18.500.000đ</p>
+                            <p class="price fl-right">{{calculateTotalCartPrice shoppingCart}}</p>
                         </div>
                         <div class="action-cart clearfix">
                             <a href="/cart" title="Giỏ hàng" class="view-cart fl-left">Giỏ hàng</a>
                             <a href="/checkout" title="Thanh toán" class="checkout fl-right">Thanh toán</a>
                         </div>
                     </div>
+
                     {{/if}}
 
                 </div>

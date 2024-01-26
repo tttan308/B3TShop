@@ -28,44 +28,32 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{#each cartItems}}
                         <tr>
-                            <td>HCA00031</td>
+                            <td>{{ProductID}}</td>
                             <td>
                                 <a href="" title="" class="thumb">
-                                    <img src="/images/img-pro-01.png" alt="">
+                                    {{#if ImageURL}}
+                                    <img src="{{ImageURL}}" alt="{{ProductName}}">
+                                    {{else}}
+                                    <img src="/images/img-pro-01.png" alt="{{ProductName}}">
+                                    {{/if}}
                                 </a>
                             </td>
                             <td>
-                                <a href="" title="" class="name-product">Sony Express X6</a>
+                                <a href="/product/detail/{{ProductID}}" title="" class="name-product">{{ProductName}}</a>
                             </td>
-                            <td>500.000đ</td>
+                            <td>{{formatPrice Price}}</td>
                             <td>
-                                <input type="number" min="1" name="num-order" value="1" class="num-order">
+                                <input type="number" min="0" name="num-order" value="{{Quantity}}" class="num-order"
+                                    onchange="updateTotalPrice({{ProductID}}, this.value, {{Price}})">
                             </td>
-                            <td>500.000đ</td>
+                            <td id="total-price-{{ProductID}}">{{calculateTotalPrice Price Quantity}}</td>
                             <td>
                                 <a href="" title="" class="del-product"><i class="fa fa-trash-o"></i></a>
                             </td>
                         </tr>
-                        <tr>
-                            <td>HCA00032</td>
-                            <td>
-                                <a href="" title="" class="thumb">
-                                    <img src="/images/img-pro-01.png" alt="">
-                                </a>
-                            </td>
-                            <td>
-                                <a href="" title="" class="name-product">Laptop Probook HP 4430s</a>
-                            </td>
-                            <td>350.000đ</td>
-                            <td>
-                                <input type="number" min="1" name="num-order" value="1" class="num-order">
-                            </td>
-                            <td>350.000đ</td>
-                            <td>
-                                <a href="" title="" class="del-product"><i class="fa fa-trash-o"></i></a>
-                            </td>
-                        </tr>
+                        {{/each}}
                     </tbody>
                     <tfoot>
                         <tr>
@@ -91,10 +79,21 @@
         </div>
         <div class="section" id="action-cart-wp">
             <div class="section-detail">
-                <p class="title">Click vào <span>“Cập nhật giỏ hàng”</span> để cập nhật số lượng. Nhập vào số lượng <span>0</span> để xóa sản phẩm khỏi giỏ hàng. Nhấn vào thanh toán để hoàn tất mua hàng.</p>
-                <a href="/" title="" id="buy-more">Mua tiếp</a><br/>
+                <p class="title">Click vào <span>“Cập nhật giỏ hàng”</span> để cập nhật số lượng. Nhập vào số lượng
+                    <span>0</span> để xóa sản phẩm khỏi giỏ hàng. Nhấn vào thanh toán để hoàn tất mua hàng.
+                </p>
+                <a href="/" title="" id="buy-more">Mua tiếp</a><br />
                 <a href="" title="" id="delete-cart">Xóa giỏ hàng</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function updateTotalPrice(productId, quantity, price) {
+        var newTotalPrice = quantity * price;
+        var formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(newTotalPrice);
+
+        document.getElementById('total-price-' + productId).textContent = formattedPrice;
+    }
+</script>

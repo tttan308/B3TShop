@@ -50,6 +50,24 @@ handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
   }
 });
 
+handlebars.registerHelper('calculateTotalPrice', function (price, quantity) {
+  let totalPrice = price * quantity;
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice);
+});
+
+handlebars.registerHelper('calculateTotalCartPrice', function (cartItems) {
+  let total = 0;
+  if (Array.isArray(cartItems)) {
+    cartItems.forEach(item => {
+      let price = parseFloat(item.Price);
+      total += price * item.Quantity;
+    });
+  }
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
+});
+
+
+
 
 // Routes
 const initRoutes = require("./src/routes");

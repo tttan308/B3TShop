@@ -1,6 +1,7 @@
 const customErr = require("../models/customErr");
 const jwt = require("jsonwebtoken");
 const categoryController = require("./categoryController");
+const cartController = require("./cartController");
 
 const homeController = {
 
@@ -9,12 +10,15 @@ const homeController = {
     const token = req.cookies.accessToken;
     const username = token ? jwt.decode(token).username : null;
     const categories = await categoryController.getAllCategory(req, res);
-    const get4ProductOfEachCategory = await categoryController.get4ProductOfEachRootCategory(req, res);
+    const get4ProductOfEachCategory = await categoryController.get4ProductOfEachRootCategory(req, res); 
+    const shoppingCart = await cartController.getCartItemsDetail(req, res);
+    
     return res.render("home", {
       isLoggedIn: !!token,
       username: username,
       categories: categories, 
       get4ProductOfEachCategory: get4ProductOfEachCategory,
+      shoppingCart: shoppingCart,
     });
 
   },
