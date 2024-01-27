@@ -198,32 +198,55 @@ const categoryController = {
   getCategoryById: async (req, res) => {
     try {
       const id = req.params.id;
-
       const category = await Category.findByPk(id);
 
       if (!category) {
         return res.status(404).send('Category not found');
       }
 
-      const listOfProducts = await Product.findAll({
+      // Tìm tất cả các sản phẩm có category là id hoặc thuộc subcategory mà có parent là id
+      const subcategories = await Category.findAll({
         where: {
-          CategoryID: id
+          ParentID: id
+        }
+      });
+
+      const subcategoriesID = subcategories.map((subcategory) => {
+        return subcategory.CategoryID;
+      });
+
+      const products = await Product.findAll({
+        where: {
+          CategoryID: [id, ...subcategoriesID],
         }
       });
 
       const result = {
-        CategoryName: category.dataValues.CategoryName,
-        listOfProducts: listOfProducts.map((product) => {
+        CategoryID: category.CategoryID,
+        CategoryName: category.CategoryName,
+        products: products.map((product) => {
           return {
-            ProductID: product.dataValues.ProductID,
-            ProductName: product.dataValues.ProductName,
-            Price: product.dataValues.Price,
-            ImageURL: product.dataValues.ImageURL,
+            ProductID: product.ProductID,
+            ProductName: product.ProductName,
+            Price: product.Price,
+            Discount: product.Discount,
+            ImageURL: product.ImageURL,
           }
         })
-      }
+      };
 
-      return res.status(200).send(category);
+      // Phân trang, mỗi trang 12 sản phẩm
+      const page = req.query.page;
+      const limit = 12;
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const total = result.products.length;
+
+      result.products = result.products.slice(startIndex, endIndex);
+      const totalPages = Math.ceil(total / limit) || 1;
+      result.totalPages = totalPages;
+
+      res.render('product', { page: result })
     } catch (error) {
       res.status(500).send('Server Error');
     }

@@ -49,6 +49,14 @@ module.exports = {
     return topSellingProduct;
   },
 
+  getRelatedProduct: async (product) => {
+    const relatedProducts = await Product.find({
+      CategoryID: product.CategoryID,
+      _id: { $ne: productId },
+    }).limit(8);
+    return relatedProducts;
+  },
+
   //create product
   createProduct: async (product) => {
     const newProduct = await Product.create(product);
@@ -63,15 +71,12 @@ module.exports = {
     return updatedProduct;
   },
 
-
-  updateProductImage: sync(productId, imageURL) => {
-  }
+  updateProductImage: async (productId, imageURL) => {},
 
   //delete product
   deleteProduct: async (productId) => {
     const deletedProduct = await Product.findByIdAndDelete(productId);
+    //TODO: Delete image
     return deletedProduct;
   },
-
- 
 };

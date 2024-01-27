@@ -1,4 +1,3 @@
-require("events").EventEmitter.defaultMaxListeners = 16;
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -103,6 +102,21 @@ handlebars.registerHelper("calculateTotalCartPrice", function (cartItems) {
     style: "currency",
     currency: "VND",
   }).format(total);
+});
+
+handlebars.registerHelper("calcOldPrice", function (price, discount) {
+  const oldPrice = parseFloat(price) / (1 - discount / 100);
+  return oldPrice.toFixed(2);
+});
+
+handlebars.registerHelper("eachPagination", function (totalPages, options) {
+  let result = "";
+
+  for (let i = 1; i <= totalPages; i++) {
+    result += options.fn(i);
+  }
+
+  return result;
 });
 
 // Routes

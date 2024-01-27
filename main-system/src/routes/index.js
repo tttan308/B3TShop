@@ -4,7 +4,7 @@ const initCartRoute = require("./cart");
 const initProductRoute = require("./product");
 const initUserRoutes = require("./user");
 const initAdminRoute = require("./admin");
-const initCategoryRoute = require("./category");
+const initCategoryRoute = require("./category");initCategoryRoute
 
 module.exports = (app) => {
   initWebRoute(app);  

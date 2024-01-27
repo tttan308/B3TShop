@@ -62,7 +62,7 @@
                         {{#if isLoggedIn}}
                         <a href="/cart" title="Giỏ hàng" style="text-decoration: none;">
                             <i class="fa fa-shopping-cart" aria-hidden="true" style="color: white;"></i>
-                            <span id="num">2</span>
+                            <span id="num">{{shoppingCart.length}}</span>
                         </a>
                         {{else}}
                         <a href="/auth/login" title="Đăng nhập" style="text-decoration: none;">
