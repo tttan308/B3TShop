@@ -38,7 +38,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Thêm Danh Mục</h5>
-                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="addCategoryForm">
@@ -46,14 +46,16 @@
                         <label for="categoryName">Tên Danh Mục:</label>
                         <input type="text" class="form-control" id="categoryName" placeholder="Nhập tên danh mục">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-2">
                         <label for="subcategories">Danh mục con:</label>
                         <div id="subcategoriesContainer">
                             <input type="text" class="form-control" id="subcategories"
                                 placeholder="Nhập các danh mục con">
                         </div>
-                        <button type="button" class="btn btn-secondary" onclick="addSubcategoryInput()">+</button>
-                        <small class="form-text text-muted">Nhập nhiều subcategories, sử dụng dấu + để thêm mới.</small>
+                        <div class="d-flex align-items-center">
+                            <button type="button" class="btn btn-secondary mt-2" onclick="addSubcategoryInput()">+</button>
+                            <small class="form-text text-muted mx-2">Nhập nhiều subcategories, sử dụng dấu + để thêm mới.</small>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -71,7 +73,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Xác Nhận Xóa</h5>
-                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>Bạn có chắc chắn muốn xóa danh mục <span id="categoryNameToDelete"></span> không?</p>
@@ -90,7 +92,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Sửa Danh Mục</h5>
-                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="editCategoryForm">
@@ -99,7 +101,7 @@
                         <input type="text" class="form-control" id="editCategoryName" placeholder="Nhập tên danh mục"
                             value="{{this.CategoryName}}">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-2">
                         <label for="editSubcategories">Danh mục con:</label>
                         <div id="editSubcategoriesContainer">
                            
@@ -196,7 +198,7 @@
         var subcategoriesContainer = document.getElementById("subcategoriesContainer");
         var input = document.createElement("input");
         input.type = "text";
-        input.className = "form-control";
+        input.className = "form-control mt-2";
         input.placeholder = "Nhập subcategories";
         subcategoriesContainer.appendChild(input);
     }

@@ -7,13 +7,17 @@
       <form action="/admin/product/add" enctype="multipart/form-data" method="POST" id="addProductForm" >
         <div class="row">
           <div class="col-6">
-            <div class="form-group">    
-              <label for="name">Tên sản phẩm</label>
-              <input class="form-control" type="text" name="name" id="name" />
+            <div class="form-group">
+              <label for="name" >Tên sản phẩm</label>
+              <input class="form-control" required type="text" name="name" id="name" />
             </div>
             <div class="form-group">
               <label for="price">Giá</label>
-              <input class="form-control" type="text" name="price" id="price" />
+              <input class="form-control" required type="text" name="price" id="price" />
+            </div>
+            <div class="form-group">
+              <label for="quantity">Số lượng</label>
+              <input class="form-control"  type="text" name="quantity" id="quantity" />
             </div>
             
         <div class="form-group">
@@ -24,12 +28,11 @@
 
         <div class="form-group">
           <label for="">Danh mục</label>
-          <select class="form-control" id="">
+          <select class="form-control" name="categoryID" id="">
             <option>Chọn danh mục</option>
-            <option value="1">Danh mục 1</option>
-            <option value="2">Danh mục 2</option>
-            <option value="3">Danh mục 3</option>
-            <option value="4">Danh mục 4</option>
+            {{#each categories}}
+            <option value="{{CategoryID}}">{{CategoryName}}</option>
+            {{/each}}
           </select>
         </div>
           </div>

@@ -1,4 +1,4 @@
-const db = require('../models');
+const db = require("../models");
 const Cart = db.carts;
 const CartItem = db.cartItems;
 const jwt = require("jsonwebtoken");
@@ -54,8 +54,7 @@ const cartController = {
                 console.log("Add to cart successfully");
 
                 return res.status(200).send("Add to cart successfully");
-            }
-            else {
+            } else {
                 const cartItem = await CartItem.findOne({
                     where: {
                         CartID: cart.CartID,
@@ -117,7 +116,6 @@ const cartController = {
                 },
             });
 
-
             if (!cart) {
                 return res.render("cart", {
                     isLoggedIn: !!token,
@@ -134,10 +132,12 @@ const cartController = {
 
             const result = [];
 
-            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID, 
+            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID,
             //result chỉ lấy ẢNH SẢN PHẨM	TÊN SẢN PHẨM	GIÁ SẢN PHẨM	SỐ LƯỢNG	THÀNH TIỀN\
             for (let i = 0; i < cartItems.length; i++) {
-                const product = await Product.findByPk(cartItems[i].dataValues.ProductID);
+                const product = await Product.findByPk(
+                    cartItems[i].dataValues.ProductID
+                );
                 if (!product) {
                     continue;
                 }
@@ -196,19 +196,25 @@ const cartController = {
 
             const result = [];
 
-            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID, 
+            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID,
             //result chỉ lấy ẢNH SẢN PHẨM	TÊN SẢN PHẨM	GIÁ SẢN PHẨM	SỐ LƯỢNG	THÀNH TIỀN\
             for (let i = 0; i < cartItems.length; i++) {
-                const product = await Product.findByPk(cartItems[i].dataValues.ProductID);
+                const product = await Product.findByPk(
+                    cartItems[i].dataValues.ProductID
+                );
                 if (!product) {
                     continue;
                 }
-                const safeData = Object.assign({}, product.dataValues);
-                result.push({
-                    ...safeData,
-                    Quantity: cartItems[i].Quantity,
-                });
             }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    getAllPriceInCartItems: async (req, res) => {
+        try {
+            const token = req.cookies.accessToken;
+            const username = token ? jwt.decode(token).username : null;
 
             return result;
         } catch (error) {
@@ -253,10 +259,12 @@ const cartController = {
 
             let totalPrice = 0;
 
-            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID, 
+            // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID,
             //result chỉ lấy ẢNH SẢN PHẨM	TÊN SẢN PHẨM	GIÁ SẢN PHẨM	SỐ LƯỢNG	THÀNH TIỀN\
             for (let i = 0; i < cartItems.length; i++) {
-                const product = await Product.findByPk(cartItems[i].dataValues.ProductID);
+                const product = await Product.findByPk(
+                    cartItems[i].dataValues.ProductID
+                );
                 if (!product) {
                     continue;
                 }
@@ -293,8 +301,6 @@ const cartController = {
                 return res.redirect("/auth/login");
             }
 
-            const totalPriceInCartItems = await cartController.getAllPriceInCartItems(req, res);
-
             const response = await fetch("https://localhost:5000/payment", {
                 method: "POST",
                 body: JSON.stringify({
@@ -310,6 +316,7 @@ const cartController = {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+
 
             const paymentAccounts = await response.json();
 

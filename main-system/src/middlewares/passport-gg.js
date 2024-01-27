@@ -1,6 +1,7 @@
 const passport = require("passport");
 require("dotenv").config();
 var GoogleStrategy = require("passport-google-oauth2").Strategy;
+
 const db = require("../models");
 const User = db.users;
 passport.use(
@@ -8,24 +9,11 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: "https://localhost:3000/auth/google/callback",
       passReqToCallback: true,
     },
     async (request, accessToken, refreshToken, profile, done) => {
       try {
-        let info = {
-          Username: profile.displayName,
-          PasswordHash: "",
-          FullName: profile.displayName,
-          Email: profile.emails[0].value,
-          PhoneNumber: null,
-          isAdmin: false,
-          AuthenticationType: null,
-          AuthProviderID: null,
-          AuthProviderToken: null,
-          DateCreated: new Date(),
-        };
-
         // Check if user exists
         const userExists = await User.findOne({
           where: {
@@ -35,7 +23,20 @@ passport.use(
         if (userExists) {
           return done(null, userExists);
         } else {
+          let info = {
+            Username: profile.displayName,
+            PasswordHash: "",
+            FullName: profile.displayName,
+            Email: profile.emails[0].value,
+            PhoneNumber: null,
+            isAdmin: false,
+            AuthenticationType: null,
+            AuthProviderID: null,
+            AuthProviderToken: null,
+            DateCreated: new Date(),
+          };
           const user = await User.create(info);
+
           return done(null, user);
         }
       } catch (error) {

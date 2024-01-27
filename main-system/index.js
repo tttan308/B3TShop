@@ -10,8 +10,11 @@ const morgan = require("morgan");
 const https = require("https");
 
 const customErr = require("./src/models/customErr");
-
+const passport = require("passport");
+require("./src/middlewares/passport-gg");
+var session = require("express-session");
 // Config
+app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(cors());
 app.use(cookieParser());
@@ -19,12 +22,35 @@ app.use(express.json());
 
 // Body parser
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
 
 // Template engine
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.set("views", "./src/views");
+
+// Session
+app.use(
+  session({
+    secret: "ducba",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser(async (user, done) => {
+  try {
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
 
 handlebars.registerHelper("formatPrice", function (price) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
@@ -102,10 +128,10 @@ app.use((err, req, res, next) => {
 });
 
 // HTTPS
-const fs = require('fs');
-const options ={
-  key: fs.readFileSync('_certs/key.pem'),
-  cert : fs.readFileSync('_certs/cert.pem')
+const fs = require("fs");
+const options = {
+  key: fs.readFileSync("_certs/key.pem"),
+  cert: fs.readFileSync("_certs/cert.pem"),
 };
 const httpsServer = https.createServer(options, app);
 

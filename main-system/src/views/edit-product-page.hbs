@@ -1,7 +1,7 @@
 <div id="content" class="container-fluid">
   <div class="card">
     <div class="card-header font-weight-bold">
-      Thêm sản phẩm
+      Cập nhật sản phẩm
     </div>
     <div class="card-body">
       <form action="/admin/product/edit/{{product.ProductID}}" enctype="multipart/form-data" method="POST" id="addProductForm" >
@@ -9,27 +9,30 @@
           <div class="col-6">
             <div class="form-group">    
               <label for="name">Tên sản phẩm</label>
-              <input class="form-control" type="text" name="name" id="name" value="product.ProductName"/>
+              <input class="form-control" required type="text" name="name" id="name" value="{{product.ProductName}}"/>
             </div>
             <div class="form-group">
               <label for="price">Giá</label>
-              <input class="form-control" type="text" name="price" id="price" />
+              <input class="form-control" required type="text" name="price" id="price"  value="{{product.Price}}"/>
+            </div>
+            <div class="form-group">
+              <label for="quantity">Số lượng</label>
+              <input class="form-control" required type="text" name="quantity" id="quantity"  value="{{product.StockQuantity}}"/>
             </div>
             
         <div class="form-group">
           <label for="detail">Chi tiết sản phẩm</label>
-          <textarea name="detail" class="form-control" id="detail" cols="30" rows="5"></textarea>
+          <textarea name="detail" class="form-control" id="detail" cols="30" rows="5">{{product.Detail}}</textarea>
         </div>
         
 
         <div class="form-group">
           <label for="">Danh mục</label>
-          <select class="form-control" id="">
+          <select class="form-control" name="categoryID" id="categorySelection">
             <option>Chọn danh mục</option>
-            <option value="1">Danh mục 1</option>
-            <option value="2">Danh mục 2</option>
-            <option value="3">Danh mục 3</option>
-            <option value="4">Danh mục 4</option>
+            {{#each categories}}
+            <option  value="{{this.CategoryID}}">{{this.CategoryName}}</option>
+            {{/each}}
           </select>
         </div>
           </div>
@@ -39,7 +42,7 @@
               <input type="file" name="image" class="form-control" id="image" onchange="PreviewImage();" cols="30" rows="5"></input>
               
               <div class="m-3"> 
-              <img id="previewImg" class="rounded-3 w-50" />
+              <img id="previewImg" src="/images/products/{{product.ProductID}}.jpg" class="rounded-3 w-50" />
 
               </div>
 
@@ -49,7 +52,7 @@
 
         
 
-        <input type="submit" value="Thêm mới" class="btn btn-primary mt-3">
+        <input type="submit" value="Lưu" class="btn btn-primary mt-3">
       </form>
     </div>
   </div>
@@ -68,6 +71,7 @@
 
 <script>
 
+
     function PreviewImage() {
         var oFReader = new FileReader();
         oFReader.readAsDataURL(document.getElementById("image").files[0]);
@@ -76,4 +80,11 @@
             document.getElementById("previewImg").src = oFREvent.target.result;
         };
     };
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+  
+        var categoryID = "{{product.CategoryID}}";
+        $("#categorySelection").val(categoryID).change();
+    });
 </script>

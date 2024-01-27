@@ -1,6 +1,6 @@
 const route = require("express").Router();
-const authController = require("../controllers/authController");
 const authorMiddleware = require("../middlewares/authorMiddleware");
+const authController = require("../controllers/authController");
 const passport = require("passport");
 const initAuthRoute = (app) => {
   route.get("/register", (req, res) => {
@@ -27,11 +27,37 @@ const initAuthRoute = (app) => {
     passport.authenticate("google", { scope: ["email", "profile"] })
   );
   route.get("/google/callback", async (req, res, next) => {
-    passport.authenticate("google", { failureRedirect: "/auth/login" }),
-      function (req, res) {
-        // Successful authentication, redirect home.
-        res.redirect("/");
-      };
+    passport.authenticate("google", async function (error, user) {
+      if (error) {
+        return next(error);
+      }
+      if (!user) {
+        return res.redirect("/auth/login");
+      } else {
+        const accessToken = authController.generateAccessToken(user);
+
+        const refreshToken = authController.generateRefreshToken(user);
+
+        //STORE REFRESH TOKEN IN COOKIE
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: false,
+          path: "/",
+          sameSite: "strict",
+        });
+
+        res.cookie("accessToken", accessToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
+        res.send(`
+        <script>
+          window.location.href = "/";
+        </script>
+      `);
+      }
+    })(req, res, next);
   });
   route.get("/logout", authorMiddleware.verifyToken, (req, res) => {
     res.clearCookie("accessToken");

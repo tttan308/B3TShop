@@ -1,10 +1,21 @@
 const db = require('../models');
 const Transaction = db.transactions;
-
+const jwt = require('jsonwebtoken');
 const paymentController = {
     authorizePayment: async (req, res) => {
+        console.log('authorizePayment');
         try {
-            const { accountID, amount } = req.body;
+
+            // get token from authorization header Bearer
+            const token = req.headers.authorization.split(' ')[1];
+            console.log(token);
+            // get accountID from token
+            const accountID = token ? jwt.decode(token).accountID : null;
+            // get amount from body
+            const { amount } = req.body;
+
+            console.log(accountID);
+            console.log(amount);
 
             const transaction = await Transaction.create({
                 AccountID: accountID,
