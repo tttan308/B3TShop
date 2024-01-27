@@ -29,7 +29,13 @@
     const errorDiv = $("#signupError");
 
     errorDiv.addClass("d-none").text("");
-
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      errorDiv
+        .text("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số!")
+        .removeClass("d-none");
+      return;
+    }
     if (password !== confirmPassword) {
       errorDiv
         .text("Mật khẩu và xác nhận mật khẩu không khớp!")
@@ -64,12 +70,20 @@
 
   $("#loginForm").on("submit", function (e) {
     e.preventDefault();
-    $("#loginError").remove();
 
     const form = $(this);
     const username = $('[name="username"]').val();
     const password = $('[name="password"]').val();
+    const errorDiv = $("#loginError");
 
+    errorDiv.addClass("d-none").text("");
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      errorDiv
+        .text("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số!")
+        .removeClass("d-none");
+      return;
+    }
     $.ajax({
       url: "/auth/login",
       type: "POST",
@@ -90,9 +104,10 @@
       },
       error: function (error) {
         console.error("Error:", error);
-        form.after(
-          '<p id="loginError" class="text-white">Tài khoản hoặc mật khẩu không đúng</p>'
-        );
+
+        errorDiv
+          .text("Tài khoản hoặc mật khẩu không đúng")
+          .removeClass("d-none");
       },
     });
   });
