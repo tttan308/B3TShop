@@ -1,0 +1,86 @@
+<div class="container">
+    <h1 class="text-center mt-5">Quản Lý Nguoi Dung</h1>
+
+    <div class="my-3">
+        <input type="text" name="search" id="search" class="form-control" placeholder="Nhập tên nguoi dung" />
+        <button class="btn btn-primary mt-3" id="searchBtn">Tìm kiếm</button>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Fullname</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{this.Username}}</td>
+                <td>
+                    {{this.Fullname}}
+                </td>
+                
+                <td>{{this.Email}}</td>
+                <td>{{#if this.IsAdmin}}Admin{{else}}Customer{{/if}}</td>
+      
+                <td>
+                  {{#unless this.IsAdmin}}
+                    <button class="btn btn-danger"
+                        onclick="showDeleteConfirmationModal('{{this.Username}}', {{this.UserID}})">Xóa</button>
+                  {{/unless}}
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+
+<div class="modal" id="deleteConfirmationModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác Nhận Xóa</h5>
+        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa tai khoan <span id="userNameToDelete"></span> không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-danger" onclick="deleteUser()">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showDeleteConfirmationModal(username, userID) {
+    $('#userNameToDelete').text(username);
+    $('#deleteConfirmationModal').modal('show');
+    $('#deleteConfirmationModal').data('userID', userID);
+  }
+
+  function deleteUser() {
+    const userID = $('#deleteConfirmationModal').data('userID');
+    $.ajax({
+      url: `/admin/users/delete/${userID}`,
+      method: 'DELETE',
+      success: function() {
+        window.location.reload();
+      },
+      error: function() {
+        alert('Đã có lỗi xảy ra');
+      }
+    })
+  }
+
+  document.getElementById('searchBtn').addEventListener('click', function(){
+    search = document.getElementById('search').value;
+    document.location.href = `/admin/users?name=${search}`;
+  });
+
+</script>
