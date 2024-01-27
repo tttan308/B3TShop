@@ -67,6 +67,7 @@ const authController = {
   generateAccessToken: (user) => {
     return jwt.sign(
       {
+        id: user.id,
         username: user.Username,
         isAdmin: user.isAdmin,
       },

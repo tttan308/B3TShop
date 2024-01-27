@@ -13,24 +13,23 @@
             </div>
         </div>
         <div class="main-content fl-right">
-            <div class="main-content fl-right">
                 <div class="section" id="list-product-wp">
                     <div class="section-head clearfix">
                         <h3 class="section-title fl-left">{{page.CategoryName}}</h3>
                         <!-- Bổ sung filter và phân trang nếu cần -->
                     </div>
                     <div class="section-detail">
-                        <ul class="list-item clearfix">
+                        <ul class="list-item clearfix" >
                             {{#each page.products}}
                             <li>
-                                <a href="products/{{ProductID}}" title="" class="thumb">
-                                    <img src="/{{ImageURL}}" alt="{{ProductName}}">
+                                <a href="/product/detail/{{ProductID}}" title="" class="thumb">
+                                    <img style="width:190px;height:190px;" src="/images/products/{{ProductID}}.jpg" alt="{{ProductName}}">
                                 </a>
-                                <a href="product/detail/{{ProductID}}" title="" class="product-name">{{ProductName}}</a>
+                                <a href="/product/detail/{{ProductID}}" title="" class="product-name text-truncate">{{ProductName}}</a>
                                 <div class="price">
-                                    <span class="new">{{Price}}đ</span>
+                                    <span class="new" style="font-size:13px;">{{Price}}đ</span>
                                     <!-- Giả định có giá cũ để hiển thị, tính toán dựa trên Discount -->
-                                    <span class="old">{{calcOldPrice Price Discount}}đ</span>
+                                    <span class="old" style="font-size:13px;">{{calcOldPrice Price Discount}}đ</span>
                                 </div>
                                 <div class="action clearfix">
                                     <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
@@ -54,7 +53,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+          
         </div>
         {{> sidebar_product}}
     </div>

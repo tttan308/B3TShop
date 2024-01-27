@@ -1,4 +1,4 @@
-const db = require('../models');
+const db = require("../models");
 const Category = db.categories;
 const Product = db.products;
 
@@ -9,33 +9,32 @@ const categoryController = {
         include: [
           {
             model: Category,
-            as: 'Subcategories',
-            attributes: ['CategoryID', 'CategoryName'],
-          }
+            as: "Subcategories",
+            attributes: ["CategoryID", "CategoryName"],
+          },
         ],
         where: {
-          ParentID: null
-        }
+          ParentID: null,
+        },
       });
       const result = categories.map((category) => {
         const subcategories = category.Subcategories.map((subcategory) => {
           return {
             CategoryID: subcategory.dataValues.CategoryID,
             CategoryName: subcategory.dataValues.CategoryName,
-          }
+          };
         });
 
         return {
           CategoryID: category.CategoryID,
           CategoryName: category.CategoryName,
           subcategories: subcategories,
-        }
+        };
       });
 
       return result;
-
     } catch (error) {
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   },
 
@@ -58,7 +57,7 @@ const categoryController = {
 
       return res.status(200).send(category);
     } catch (error) {
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   },
 
@@ -69,29 +68,29 @@ const categoryController = {
       // Xóa category và subcategories (Xóa subcategories trước)
       const category = await Category.findOne({
         where: {
-          CategoryName: name
-        }
+          CategoryName: name,
+        },
       });
 
       if (!category) {
-        return res.status(404).send('Category not found');
+        return res.status(404).send("Category not found");
       }
 
       await Category.destroy({
         where: {
-          ParentID: category.CategoryID
-        }
+          ParentID: category.CategoryID,
+        },
       });
 
       await Category.destroy({
         where: {
-          CategoryID: category.CategoryID
-        }
+          CategoryID: category.CategoryID,
+        },
       });
 
-      return res.status(200).send('Delete successfully');
+      return res.status(200).send("Delete successfully");
     } catch (error) {
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   },
 
@@ -102,39 +101,45 @@ const categoryController = {
       // Cập nhật category
       const category = await Category.findOne({
         where: {
-          CategoryName: CategoryName
-        }
+          CategoryName: CategoryName,
+        },
       });
 
       if (!category) {
-        return res.status(404).send('Category not found');
+        return res.status(404).send("Category not found");
       }
 
-      await Category.update({
-        CategoryName: CategoryName,
-      }, {
-        where: {
-          CategoryID: category.CategoryID
+      await Category.update(
+        {
+          CategoryName: CategoryName,
+        },
+        {
+          where: {
+            CategoryID: category.CategoryID,
+          },
         }
-      });
+      );
 
       // Cập nhật subcategories
       if (subcategories) {
         const subcategoriesInDB = await Category.findAll({
           where: {
-            ParentID: category.CategoryID
-          }
+            ParentID: category.CategoryID,
+          },
         });
 
         for (let i = 0; i < subcategories.length; i++) {
           if (subcategoriesInDB[i]) {
-            await Category.update({
-              CategoryName: subcategories[i],
-            }, {
-              where: {
-                CategoryID: subcategoriesInDB[i].CategoryID
+            await Category.update(
+              {
+                CategoryName: subcategories[i],
+              },
+              {
+                where: {
+                  CategoryID: subcategoriesInDB[i].CategoryID,
+                },
               }
-            });
+            );
           } else {
             await Category.create({
               CategoryName: subcategories[i],
@@ -144,19 +149,23 @@ const categoryController = {
         }
 
         if (subcategoriesInDB.length > subcategories.length) {
-          for (let i = subcategories.length; i < subcategoriesInDB.length; i++) {
+          for (
+            let i = subcategories.length;
+            i < subcategoriesInDB.length;
+            i++
+          ) {
             await Category.destroy({
               where: {
-                CategoryID: subcategoriesInDB[i].CategoryID
-              }
+                CategoryID: subcategoriesInDB[i].CategoryID,
+              },
             });
           }
         }
       }
 
-      return res.status(200).send('Update successfully');
+      return res.status(200).send("Update successfully");
     } catch (error) {
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   },
 
@@ -166,22 +175,22 @@ const categoryController = {
 
       const category = await Category.findOne({
         where: {
-          CategoryName: name
-        }
+          CategoryName: name,
+        },
       });
 
       if (!category) {
-        return res.status(404).send('Category not found');
+        return res.status(404).send("Category not found");
       }
 
       const result = {
         CategoryName: category.dataValues.CategoryName,
-      }
+      };
 
       const subcategories = await Category.findAll({
         where: {
-          ParentID: category.CategoryID
-        }
+          ParentID: category.CategoryID,
+        },
       });
 
       result.subcategories = subcategories.map((subcategory) => {
@@ -189,9 +198,8 @@ const categoryController = {
       });
 
       return res.status(200).send(result);
-
     } catch (error) {
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   },
 
@@ -201,14 +209,14 @@ const categoryController = {
       const category = await Category.findByPk(id);
 
       if (!category) {
-        return res.status(404).send('Category not found');
+        return res.status(404).send("Category not found");
       }
 
       // Tìm tất cả các sản phẩm có category là id hoặc thuộc subcategory mà có parent là id
       const subcategories = await Category.findAll({
         where: {
-          ParentID: id
-        }
+          ParentID: id,
+        },
       });
 
       const subcategoriesID = subcategories.map((subcategory) => {
@@ -218,7 +226,7 @@ const categoryController = {
       const products = await Product.findAll({
         where: {
           CategoryID: [id, ...subcategoriesID],
-        }
+        },
       });
 
       const result = {
@@ -231,8 +239,8 @@ const categoryController = {
             Price: product.Price,
             Discount: product.Discount,
             ImageURL: product.ImageURL,
-          }
-        })
+          };
+        }),
       };
 
       // Phân trang, mỗi trang 12 sản phẩm
@@ -245,10 +253,11 @@ const categoryController = {
       result.products = result.products.slice(startIndex, endIndex);
       const totalPages = Math.ceil(total / limit) || 1;
       result.totalPages = totalPages;
+      console.log(result.products);
 
-      res.render('product', { page: result })
+      res.render("product", { page: result });
     } catch (error) {
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   },
 
@@ -257,8 +266,8 @@ const categoryController = {
       // Lấy danh sách các category gốc
       const categories = await Category.findAll({
         where: {
-          ParentID: null
-        }
+          ParentID: null,
+        },
       });
 
       const result = [];
@@ -268,8 +277,8 @@ const categoryController = {
         // Với mỗi category gốc, hãy tìm các subcategory của nó, sau đó gom chung lại các sub và lấy 4 sản phẩm
         const subcategories = await Category.findAll({
           where: {
-            ParentID: category.CategoryID
-          }
+            ParentID: category.CategoryID,
+          },
         });
 
         const subcategoriesID = subcategories.map((subcategory) => {
@@ -294,8 +303,8 @@ const categoryController = {
               Price: product.Price,
               Discount: product.Discount,
               ImageURL: product.ImageURL,
-            }
-          })
+            };
+          }),
         });
       });
 
@@ -303,10 +312,9 @@ const categoryController = {
 
       return result;
     } catch (error) {
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   },
-
 };
 
 module.exports = categoryController;

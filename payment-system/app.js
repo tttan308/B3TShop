@@ -15,6 +15,8 @@ app.set("views", "./src/views");
 
 // Khởi tạo Route
 app.get('/', (req, res) => res.render('home'));
+const initRoutes = require("./src/routes");
+initRoutes(app);
 
 const PORT = process.env.PORT || 5000;
 
