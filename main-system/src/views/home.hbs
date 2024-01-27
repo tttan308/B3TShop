@@ -160,21 +160,21 @@
                         <li>
                             <a href="product/detail/{{this.ProductID}}" title="" class="thumb">
                                 {{#if this.ImageURL}}
-                                <img src="{{this.ImageURL}}">
+                                <img style="width:190px;height:190px;" src="/images/products/{{this.ProductID}}.jpg">
                                 {{else}}
                                 <img src="images/img-pro-01.png">
                                 {{/if}}
                             </a>
                             <a href="product/detail/{{this.ProductID}}" title=""
-                                class="product-name">{{this.ProductName}}</a>
+                                class="product-name text-truncate">{{this.ProductName}}</a>
                             <div class="price">
-                                <span class="new">{{formatPrice this.Price}}</span>
+                                <span class="new" style="font-size:13px;">{{formatPrice this.Price}}</span>
                                 {{#if this.Discount}}
-                                <span class="old">{{calculateOldPrice this.Price this.Discount}}</span>
+                                <span class="old" style="font-size:13px;">{{calculateOldPrice this.Price this.Discount}}</span>
                                 {{/if}}
                             </div>
                             <div class="action clearfix">
-                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
+                                <a role="button" onclick="addToCart('{{this.ProductID}}', 1)" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
                                 <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
                             </div>
                         </li>
@@ -190,7 +190,24 @@
         {{> sidebar}}
     </div>
 </div>
-
+<!--Modal thông báo thành công/thất bại khi thêm sản phẩm vào giỏ hàng-->
+<div class="modal fade" id="modalAddToCart" tabindex="-1" role="dialog" aria-labelledby="modalAddToCartLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="modalAddToCartLabel" class="modal-header">
+                <h5 class="modal-title">Thông báo</h5>
+            </div>
+            <div class="modal-body">
+                <p id="modalAddToCartMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">Đóng thông báo</a>
+                <a href="/cart" class="btn btn-primary">Xem giỏ hàng</a>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     function formatPrice(price) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -199,5 +216,39 @@
 
     function calculateOldPrice(price, discount) {
         return formatPrice(price + (price * discount / 100))
+    }
+</script>
+<script>
+    //Đóng modal thông báo sau 3s
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('#modalAddToCart').modal('hide');
+        }, 3000);
+    });
+    
+    function closeModal() {
+        $('#modalAddToCart').modal('hide');
+    }
+
+</script>
+
+<script>
+    function addToCart(productId, quantity) {
+        $.ajax({
+            url: '/cart/add',
+            method: 'POST',
+            data: {
+                productId: productId,
+                quantity: quantity
+            },
+            success: function (response) {
+                $('#modalAddToCartMessage').html("Thêm sản phẩm vào giỏ hàng thành công");
+                $('#modalAddToCart').modal('show');
+            },
+            error: function (error) {
+                $('#modalAddToCartMessage').html("Thêm sản phẩm vào giỏ hàng thất bại");
+                $('#modalAddToCart').modal('show');
+            }
+        });
     }
 </script>
