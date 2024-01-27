@@ -301,29 +301,38 @@ const cartController = {
                 return res.redirect("/auth/login");
             }
 
-            const response = await fetch("https://localhost:5000/payment", {
+            const totalPriceInCartItems = await cartController.getAllPriceInCartItems(
+                req,
+                res
+            );
+
+            const userId = user.UserID;
+
+            fetch("https://localhost:5000/payment", {
                 method: "POST",
                 body: JSON.stringify({
                     amount: totalPriceInCartItems,
+                    accountId: userId,
                 }),
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
                 agent,
-            });
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.paymentUrl) {
+                    window.open(data.url, '_blank');
+                }
+            })
+            .catch(error => console.error('Error:', error));
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-
-            const paymentAccounts = await response.json();
 
             return res.render("checkout", {
                 isLoggedIn: !!token,
                 username: username,
-                paymentAccounts,
             });
         } catch (error) {
             console.log(error);
