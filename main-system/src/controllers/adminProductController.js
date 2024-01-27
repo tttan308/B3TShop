@@ -13,6 +13,7 @@ const adminProductController = {
     const { id } = req.params;
     const product = await Product.findByPk(id);
     res.render("edit-product-page", { layout: "admin", product: product.toJSON(), categories: categories.map((c) => c.toJSON()) });
+
   },
 
   getListProductPage: async (req, res) => {
@@ -57,6 +58,7 @@ const adminProductController = {
     // });
 
     res.render("list-product-page", { layout: "admin", products: products.map((p) => p.toJSON()), totalPages: totalPages, page: page, name: name });
+
   },
 
   addProduct: async (req, res) => {
@@ -71,13 +73,22 @@ const adminProductController = {
 
     if (req.file) {
       // //rename image to productID
-      const oldPath = path.join(__dirname, `../../public/images/products/${req.file.filename}`);
-      const newPath = path.join(__dirname, `../../public/images/products/${newProduct.ProductID}.jpg`);
+      const oldPath = path.join(
+        __dirname,
+        `../../public/images/products/${req.file.filename}`
+      );
+      const newPath = path.join(
+        __dirname,
+        `../../public/images/products/${newProduct.ProductID}.jpg`
+      );
       fs.rename(oldPath, newPath, function (err) {
         if (err) throw err;
       });
     }
-    res.render("add-product-page", { layout: "admin", message: "Add product successfully" });
+    res.render("add-product-page", {
+      layout: "admin",
+      message: "Add product successfully",
+    });
   },
   updateProduct: async (req, res) => {
     //url = /admin/product/edit/:id
@@ -95,8 +106,14 @@ const adminProductController = {
 
     if (req.file) {
       // //rename image to productID
-      const oldPath = path.join(__dirname, `../../public/images/products/${req.file.filename}`);
-      const newPath = path.join(__dirname, `../../public/images/products/${product.ProductID}.jpg`);
+      const oldPath = path.join(
+        __dirname,
+        `../../public/images/products/${req.file.filename}`
+      );
+      const newPath = path.join(
+        __dirname,
+        `../../public/images/products/${product.ProductID}.jpg`
+      );
       fs.rename(oldPath, newPath, function (err) {
         if (err) throw err;
       });
