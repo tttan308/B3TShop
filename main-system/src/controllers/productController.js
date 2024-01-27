@@ -1,4 +1,4 @@
-const db = require('../models');
+const db = require("../models");
 const Product = db.products;
 const categoryController = require("./categoryController");
 const jwt = require("jsonwebtoken");
@@ -6,7 +6,10 @@ const jwt = require("jsonwebtoken");
 const productController = {
   getProductPage: async (req, res) => {
     try {
-      return res.render("product");
+      const categories = await categoryController.getAllCategory(req, res);
+      return res.render("product", {
+        categories: categories,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -21,7 +24,7 @@ const productController = {
       const product1 = await Product.findByPk(id);
 
       if (!product1) {
-        return res.status(404).send('Product not found');
+        return res.status(404).send("Product not found");
       }
 
       let safeData = Object.assign({}, product1.dataValues);
@@ -32,12 +35,10 @@ const productController = {
         categories: categories,
         product: safeData,
       });
-
     } catch (error) {
       console.log(error);
     }
   },
-
 };
 
 module.exports = productController;
