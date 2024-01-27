@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const { engine } = require("express-handlebars");
 const app = express();
 const handlebars = require('handlebars');
-
+const https = require('https');
 const customErr = require("./src/models/customErr");
 
 // Config
@@ -99,8 +99,19 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to DB
+// HTTPS
+const fs = require('fs');
+const options ={
+  key: fs.readFileSync('_certs/key.pem'),
+  cert : fs.readFileSync('_certs/cert.pem')
+};
+const httpsServer = https.createServer(options, app);
+
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`http://localhost:${port}`);
+// app.listen(port, () => {
+//   console.log(`http://localhost:${port}`);
+// });
+
+httpsServer.listen(port, () => {
+  console.log(`https://localhost:${port}`);
 });
