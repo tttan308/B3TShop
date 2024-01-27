@@ -4,6 +4,12 @@ const CartItem = db.cartItems;
 const jwt = require("jsonwebtoken");
 const User = db.users;
 const Product = db.products;
+const https = require("https");
+const fetch = require("node-fetch");
+
+const agent = new https.Agent({
+    rejectUnauthorized: false
+});
 
 const cartController = {
     addCart: async (req, res) => {
@@ -209,7 +215,7 @@ const cartController = {
             console.log(error);
         }
     },
-    
+
     getAllPriceInCartItems: async (req, res) => {
         try {
             const token = req.cookies.accessToken;
@@ -285,20 +291,25 @@ const cartController = {
 
             if (!user) {
                 return res.redirect("/auth/login");
-            }  
+            }
 
             const totalPriceInCartItems = await cartController.getAllPriceInCartItems(req, res);
 
-            const response = await fetch("http://localhost:5000/payment", {
+            const response = await fetch("https://localhost:5000/payment", {
                 method: "POST",
+                body: JSON.stringify({
+                    amount: totalPriceInCartItems,
+                }),
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    amount: totalPriceInCartItems,
-                }),
+                agent,
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const paymentAccounts = await response.json();
 
