@@ -19,74 +19,81 @@
     }
   });
 
-  $('.signup-form').on('submit', function (e) {
+  $(".signup-form").on("submit", function (e) {
     e.preventDefault();
 
     const username = $('[name="username"]').val();
     const email = $('[name="email"]').val();
     const password = $('[name="password"]').val();
-    const confirmPassword = $('#confirm_password-field').val();
-    const errorDiv = $('#signupError');
+    const confirmPassword = $("#confirm_password-field").val();
+    const errorDiv = $("#signupError");
 
-    errorDiv.addClass('d-none').text('');
+    errorDiv.addClass("d-none").text("");
 
     if (password !== confirmPassword) {
-      errorDiv.text("Mật khẩu và xác nhận mật khẩu không khớp!").removeClass('d-none');
+      errorDiv
+        .text("Mật khẩu và xác nhận mật khẩu không khớp!")
+        .removeClass("d-none");
       return;
     }
 
     $.ajax({
-      url: '/auth/register',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify({ username: username, email: email, password: password }),
+      url: "/auth/register",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({
+        username: username,
+        email: email,
+        password: password,
+      }),
       success: function (data) {
-        $('#registerModal').modal('show');
+        $("#registerModal").modal("show");
         setTimeout(function () {
-          window.location.replace('/auth/login');
-        }, 3000); 
+          window.location.replace("/auth/login");
+        }, 3000);
       },
       error: function (error) {
-        let errorMessage = 'Đã xảy ra lỗi trong quá trình đăng ký.';
+        let errorMessage = "Đã xảy ra lỗi trong quá trình đăng ký.";
         if (error.responseJSON && error.responseJSON.responseText) {
           errorMessage = error.responseJSON.responseText;
         }
-        $('#signupError').text(errorMessage).removeClass('d-none');
-      }
+        $("#signupError").text(errorMessage).removeClass("d-none");
+      },
     });
   });
 
-  $('#loginForm').on('submit', function (e) {
+  $("#loginForm").on("submit", function (e) {
     e.preventDefault();
     $("#loginError").remove();
 
-    const form = $(this); 
+    const form = $(this);
     const username = $('[name="username"]').val();
-    const password = $('[name="password"]').val(); 
+    const password = $('[name="password"]').val();
 
     $.ajax({
-      url: '/auth/login',
-      type: 'POST',
-      contentType: 'application/json',
+      url: "/auth/login",
+      type: "POST",
+      contentType: "application/json",
       data: JSON.stringify({ username: username, password: password }),
       success: function (data) {
-        $('#loginModal').modal('show');
+        $("#loginModal").modal("show");
         let counter = 3;
         const interval = setInterval(function () {
           counter--;
-          $('#countdown').text(counter);
+          $("#countdown").text(counter);
           if (counter <= 0) {
             clearInterval(interval);
-            $('#loginModal').modal('hide');
-            window.location.href = '/'; 
+            $("#loginModal").modal("hide");
+            window.location.href = "/";
           }
         }, 1000);
       },
       error: function (error) {
-        console.error('Error:', error);
-        form.after('<p id="loginError" class="text-danger">Tài khoản hoặc mật khẩu không đúng</p>');
-      }
+        console.error("Error:", error);
+        form.after(
+          '<p id="loginError" class="text-white">Tài khoản hoặc mật khẩu không đúng</p>'
+        );
+      },
     });
   });
-
 })(jQuery);
