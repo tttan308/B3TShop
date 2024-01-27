@@ -9,16 +9,16 @@
           <div class="col-6">
             <div class="form-group">    
               <label for="name">Tên sản phẩm</label>
-              <input class="form-control" type="text" name="name" id="name" value="product.ProductName"/>
+              <input class="form-control" required type="text" name="name" id="name" value="{{product.ProductName}}"/>
             </div>
             <div class="form-group">
               <label for="price">Giá</label>
-              <input class="form-control" type="text" name="price" id="price" />
+              <input class="form-control" required type="text" name="price" id="price"  value="{{product.Price}}"/>
             </div>
             
         <div class="form-group">
           <label for="detail">Chi tiết sản phẩm</label>
-          <textarea name="detail" class="form-control" id="detail" cols="30" rows="5"></textarea>
+          <textarea name="detail" class="form-control" id="detail" cols="30" rows="5">{{product.Detail}}</textarea>
         </div>
         
 
@@ -39,7 +39,7 @@
               <input type="file" name="image" class="form-control" id="image" onchange="PreviewImage();" cols="30" rows="5"></input>
               
               <div class="m-3"> 
-              <img id="previewImg" class="rounded-3 w-50" />
+              <img id="previewImg" src="/images/products/{{product.ProductID}}.jpg" class="rounded-3 w-50" />
 
               </div>
 
@@ -49,7 +49,7 @@
 
         
 
-        <input type="submit" value="Thêm mới" class="btn btn-primary mt-3">
+        <input type="submit" value="Lưu" class="btn btn-primary mt-3">
       </form>
     </div>
   </div>

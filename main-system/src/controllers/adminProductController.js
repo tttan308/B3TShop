@@ -10,11 +10,10 @@ const adminProductController = {
   getEditProductPage: async (req, res) => {
     const { id } = req.params;
     const product = await Product.findByPk(id);
-    res.render("edit-product-page", { layout: "admin", product: product });
+    res.render("edit-product-page", { layout: "admin", product: product.toJSON() });
   },
 
   getListProductPage: async (req, res) => {
-    //include category
     const products = await Product.findAll({
       include: [
         {
@@ -25,7 +24,9 @@ const adminProductController = {
       ],
     });
 
-    res.render("list-product-page", { layout: "admin", products: products });
+    console.log(products[0].ProductName);
+
+    res.render("list-product-page", { layout: "admin", products: products.map((p) => p.toJSON()) });
   },
 
   addProduct: async (req, res) => {
@@ -37,20 +38,21 @@ const adminProductController = {
       CategoryID,
     });
 
-    // //rename image to productID
-    const oldPath = path.join(__dirname, `../../public/images/products/${req.file.filename}`);
-    const newPath = path.join(__dirname, `../../public/images/products/${newProduct.ProductID}.jpg`);
-    fs.rename(oldPath, newPath, function (err) {
-      if (err) throw err;
-      console.log("File Renamed.");
-    });
-
+    if (req.file) {
+      // //rename image to productID
+      const oldPath = path.join(__dirname, `../../public/images/products/${req.file.filename}`);
+      const newPath = path.join(__dirname, `../../public/images/products/${newProduct.ProductID}.jpg`);
+      fs.rename(oldPath, newPath, function (err) {
+        if (err) throw err;
+      });
+    }
     res.render("add-product-page", { layout: "admin", message: "Add product successfully" });
   },
 
   updateProduct: async (req, res) => {
-    //productID = :id
-    const { ProductID } = req.params;
+    //url = /admin/product/edit/:id
+    const ProductID = req.params.id;
+    console.log(ProductID);
 
     const { ProductName, Price, Detail, CategoryID } = req.body;
     const product = await Product.findByPk(ProductID);
@@ -60,13 +62,14 @@ const adminProductController = {
     product.CategoryID = CategoryID;
     await product.save();
 
-    // //rename image to productID
-    const oldPath = path.join(__dirname, `../../public/images/products/${req.file.filename}`);
-    const newPath = path.join(__dirname, `../../public/images/products/${product.ProductID}.jpg`);
-    fs.rename(oldPath, newPath, function (err) {
-      if (err) throw err;
-      console.log("File Renamed.");
-    });
+    if (req.file) {
+      // //rename image to productID
+      const oldPath = path.join(__dirname, `../../public/images/products/${req.file.filename}`);
+      const newPath = path.join(__dirname, `../../public/images/products/${product.ProductID}.jpg`);
+      fs.rename(oldPath, newPath, function (err) {
+        if (err) throw err;
+      });
+    }
 
     res.redirect("/admin/product/list");
   },
