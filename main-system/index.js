@@ -1,3 +1,4 @@
+require("events").EventEmitter.defaultMaxListeners = 16;
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -6,10 +7,10 @@ const cookieParser = require("cookie-parser");
 const { engine } = require("express-handlebars");
 const app = express();
 const handlebars = require("handlebars");
-
+require("./src/middlewares/passport-gg");
 const customErr = require("./src/models/customErr");
 const passport = require("passport");
-require("./src/middlewares/passport-gg");
+
 var session = require("express-session");
 // Config
 app.use(cors());
@@ -28,7 +29,7 @@ app.set("views", "./src/views");
 // Session
 app.use(
   session({
-    secret: "ducba",
+    secret: "ducba123",
     resave: true,
     saveUninitialized: true,
     cookie: { secure: false },

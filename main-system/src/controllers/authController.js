@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt');
-const db = require('../models');
+const bcrypt = require("bcrypt");
+const db = require("../models");
 const User = db.users;
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 let refreshTokens = [];
 
@@ -25,34 +25,41 @@ const authController = {
         AuthProviderID: null,
         AuthProviderToken: null,
         DateCreated: new Date(),
-      }
+      };
 
       // Check if user exists
       const userExists = await User.findOne({
         where: {
           Username: req.body.username,
-        }
+        },
       });
 
       if (userExists) {
-        return res.status(400).json({ responseText: 'Tài khoản đã tồn tại, vui lòng nhập tài khoản khác.' });
+        return res
+          .status(400)
+          .json({
+            responseText: "Tài khoản đã tồn tại, vui lòng nhập tài khoản khác.",
+          });
       }
 
       const emailExists = await User.findOne({
         where: {
           Email: req.body.email,
-        }
+        },
       });
 
       if (emailExists) {
-        return res.status(400).json({ responseText: 'Email đã tồn tại, vui lòng nhập email khác.' });
+        return res
+          .status(400)
+          .json({
+            responseText: "Email đã tồn tại, vui lòng nhập email khác.",
+          });
       }
 
       // Save user
       const user = await User.create(info);
       res.status(200).json(user);
-    }
-    catch (err) {
+    } catch (err) {
       res.status(500).json(err);
     }
   },
@@ -86,18 +93,21 @@ const authController = {
       const user = await User.findOne({
         where: {
           Username: req.body.username,
-        }
+        },
       });
 
       if (!user) {
-        return res.status(400).json({ message: 'User does not exist' });
+        return res.status(400).json({ message: "User does not exist" });
       }
 
       // Check if password is correct
-      const validPass = await bcrypt.compare(req.body.password, user.PasswordHash);
+      const validPass = await bcrypt.compare(
+        req.body.password,
+        user.PasswordHash
+      );
 
       if (!validPass) {
-        return res.status(400).json({ message: 'Invalid password' });
+        return res.status(400).json({ message: "Invalid password" });
       }
 
       const accessToken = authController.generateAccessToken(user);
@@ -113,14 +123,16 @@ const authController = {
         sameSite: "strict",
       });
 
-      res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      });
 
       const { PasswordHash, ...info } = user.dataValues;
 
-      res.status(200).json({ ...info});
-    }
-    catch (err) {
+      res.status(200).json({ ...info });
+    } catch (err) {
       res.status(500).json(err);
     }
   },
@@ -134,22 +146,25 @@ const authController = {
         where: {
           Username: req.body.username,
           isAdmin: true,
-        }
+        },
       });
 
       if (!user) {
-        return res.status(400).json({ message: 'User does not exist' });
+        return res.status(400).json({ message: "User does not exist" });
       }
 
       // Check if password is correct
-      const validPass = await bcrypt.compare(req.body.password, user.PasswordHash);
+      const validPass = await bcrypt.compare(
+        req.body.password,
+        user.PasswordHash
+      );
 
       if (!validPass) {
-        return res.status(400).json({ message: 'Invalid password' });
+        return res.status(400).json({ message: "Invalid password" });
       }
 
       if (!user.isAdmin) {
-        return res.status(400).json({ message: 'User is not admin' });
+        return res.status(400).json({ message: "User is not admin" });
       }
 
       const accessToken = authController.generateAccessToken(user);
@@ -165,16 +180,20 @@ const authController = {
         sameSite: "strict",
       });
 
-      res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      });
 
       const { PasswordHash, ...info } = user.dataValues;
 
-      res.status(200).json({ ...info});
+      res.status(200).json({ ...info });
     } catch (err) {
       res.status(500).json(err);
     }
   },
-    
+
   // REFRESH TOKEN
   requestRefreshToken: async (req, res) => {
     //Take refresh token from user
@@ -213,6 +232,6 @@ const authController = {
     res.clearCookie("refreshToken");
     res.status(200).json("Logged out successfully!");
   },
-}
+};
 
 module.exports = authController;

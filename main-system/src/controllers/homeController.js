@@ -6,11 +6,13 @@ const cartController = require("./cartController");
 const homeController = {
   getHomePage: async (req, res) => {
     const token = req.cookies.accessToken;
+    console.log("token in home page:", token);
     const username = token ? jwt.decode(token).username : null;
-    const categories = await categoryController.getAllCategory(req, res);
+    console.log("username in home page:", username);
+    const categories = await categoryController.getAllCategory();
     const get4ProductOfEachCategory =
-      await categoryController.get4ProductOfEachRootCategory(req, res);
-    const shoppingCart = await cartController.getCartItemsDetail(req, res);
+      await categoryController.get4ProductOfEachRootCategory();
+    const shoppingCart = await cartController.getCartItemsDetail(token);
 
     return res.render("home", {
       isLoggedIn: !!token,
