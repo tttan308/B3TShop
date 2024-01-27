@@ -128,10 +128,10 @@ app.use((err, req, res, next) => {
 });
 
 // HTTPS
-const fs = require('fs');
-const options ={
-  key: fs.readFileSync('_certs/key.pem'),
-  cert : fs.readFileSync('_certs/cert.pem')
+const fs = require("fs");
+const options = {
+  key: fs.readFileSync("_certs/key.pem"),
+  cert: fs.readFileSync("_certs/cert.pem"),
 };
 const httpsServer = https.createServer(options, app);
 

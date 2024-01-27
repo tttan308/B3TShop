@@ -67,7 +67,14 @@ const homeController = {
       next(new customErr(error.message, 505));
     }
     //TODO: remove this
-    // res.render("categories_manage", { layout: "admin" });
+    const categories = await categoryController.getAllCategory(req, res);
+    res.render("categories_manage", {
+      layout: "admin",
+      // isLoggedIn: !!token,
+      // username: username,
+      categories: categories,
+    });
+
   },
 };
 

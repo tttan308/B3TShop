@@ -1,7 +1,7 @@
 <div id="content" class="container-fluid">
   <div class="card">
     <div class="card-header font-weight-bold">
-      Thêm sản phẩm
+      Cập nhật sản phẩm
     </div>
     <div class="card-body">
       <form action="/admin/product/edit/{{product.ProductID}}" enctype="multipart/form-data" method="POST" id="addProductForm" >
@@ -15,6 +15,10 @@
               <label for="price">Giá</label>
               <input class="form-control" required type="text" name="price" id="price"  value="{{product.Price}}"/>
             </div>
+            <div class="form-group">
+              <label for="quantity">Số lượng</label>
+              <input class="form-control" required type="text" name="quantity" id="quantity"  value="{{product.StockQuantity}}"/>
+            </div>
             
         <div class="form-group">
           <label for="detail">Chi tiết sản phẩm</label>
@@ -24,12 +28,11 @@
 
         <div class="form-group">
           <label for="">Danh mục</label>
-          <select class="form-control" id="">
+          <select class="form-control" name="categoryID" id="categorySelection">
             <option>Chọn danh mục</option>
-            <option value="1">Danh mục 1</option>
-            <option value="2">Danh mục 2</option>
-            <option value="3">Danh mục 3</option>
-            <option value="4">Danh mục 4</option>
+            {{#each categories}}
+            <option  value="{{this.CategoryID}}">{{this.CategoryName}}</option>
+            {{/each}}
           </select>
         </div>
           </div>
@@ -68,6 +71,7 @@
 
 <script>
 
+
     function PreviewImage() {
         var oFReader = new FileReader();
         oFReader.readAsDataURL(document.getElementById("image").files[0]);
@@ -76,4 +80,11 @@
             document.getElementById("previewImg").src = oFREvent.target.result;
         };
     };
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+  
+        var categoryID = "{{product.CategoryID}}";
+        $("#categorySelection").val(categoryID).change();
+    });
 </script>
