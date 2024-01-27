@@ -211,6 +211,113 @@ const cartController = {
       console.log(error);
     }
   },
+
+  getAllPriceInCartItems: async (req, res) => {
+    try {
+      const token = req.cookies.accessToken;
+      const username = token ? jwt.decode(token).username : null;
+
+      if (!token) {
+        return res.redirect("/auth/login");
+      }
+
+      const user = await User.findOne({
+        where: {
+          Username: username,
+        },
+      });
+
+      if (!user) {
+        return res.redirect("/auth/login");
+      }
+
+      const cart = await Cart.findOne({
+        where: {
+          UserID: user.UserID,
+        },
+      });
+
+      if (!cart) {
+        return 0;
+      }
+
+      const cartItems = await CartItem.findAll({
+        where: {
+          CartID: cart.CartID,
+        },
+      });
+
+      let totalPrice = 0;
+
+      // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID,
+      //result chỉ lấy ẢNH SẢN PHẨM	TÊN SẢN PHẨM	GIÁ SẢN PHẨM	SỐ LƯỢNG	THÀNH TIỀN\
+      for (let i = 0; i < cartItems.length; i++) {
+        const product = await Product.findByPk(
+          cartItems[i].dataValues.ProductID
+        );
+        if (!product) {
+          continue;
+        }
+        const safeData = Object.assign({}, product.dataValues);
+        totalPrice += safeData.Price * cartItems[i].Quantity;
+      }
+
+      return totalPrice;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getCheckoutPage: async (req, res) => {
+    // Gửi request lên payment-system ở host 5000 để lấy thông tin tài khoản ngân hàng
+    // gửi kèm token và số tiền cần thanh toán
+    // nhận về thông tin tài khoản ngân hàng
+    // render ra trang checkout
+    try {
+      const token = req.cookies.accessToken;
+      const username = token ? jwt.decode(token).username : null;
+
+      if (!token) {
+        return res.redirect("/auth/login");
+      }
+
+      const user = await User.findOne({
+        where: {
+          Username: username,
+        },
+      });
+
+      if (!user) {
+        return res.redirect("/auth/login");
+      }
+
+      const totalPriceInCartItems = await cartController.getAllPriceInCartItems(
+        req,
+        res
+      );
+
+      const response = await fetch("http://localhost:5000/payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          amount: totalPriceInCartItems,
+        }),
+      });
+
+      const paymentAccounts = await response.json();
+
+      return res.render("checkout", {
+        isLoggedIn: !!token,
+        username: username,
+        paymentAccounts,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
 module.exports = cartController;
