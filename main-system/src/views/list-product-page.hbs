@@ -8,9 +8,6 @@
       <table class="table table-striped table-checkall">
         <thead>
           <tr>
-            <th scope="col">
-              <input name="checkall" type="checkbox" />
-            </th>
             <th scope="col">Ảnh</th>
             <th scope="col">Tên sản phẩm</th>
             <th scope="col">Giá</th>
@@ -22,10 +19,7 @@
         <tbody>
           {{#each products}}
             <tr>
-              <td>
-                <input type="checkbox" />
-              </td>
-              <td><img width="200" height="200" src="images/products/{{this.ProductID}}" onerror="this.src='http://via.placeholder.com/200X200'" /></td>
+              <td><img width="200" height="200" src="/images/products/{{this.ProductID}}.jpg" onerror="this.src='http://via.placeholder.com/200X200'" /></td>
               <td><a href="#">{{this.ProductName}}</a></td>
               <td>{{this.Price}}</td>
               <td>{{this.Category.CategoryName}}</td>
@@ -73,7 +67,7 @@
         <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-        <p>Bạn có chắc chắn muốn xóa danh mục <span id="categoryNameToDelete"></span> không?</p>
+        <p>Bạn có chắc chắn muốn xóa san pham <span id="categoryNameToDelete"></span> không?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>

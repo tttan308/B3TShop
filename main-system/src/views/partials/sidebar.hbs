@@ -8,8 +8,9 @@
                 {{#each categories}}
                 <li>
                     <a href="/categories/{{this.CategoryID}}?page=1" title=""
-                        class="d-flex justify-content-between align-items-center"> <span>{{this.CategoryName}}</span> <i
-                            class="fa-solid fa-chevron-right"></i></a>
+                        class="d-flex justify-content-between align-items-center"> <span>{{this.CategoryName}}</span> {{#if this.subcategories.length}}
+                         <i class="fa-solid fa-chevron-right"></i>
+                        {{/if}}</a>
                     {{#if this.subcategories}}
                     <ul class="sub-menu">
                         {{#each this.subcategories}}

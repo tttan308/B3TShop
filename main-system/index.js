@@ -9,8 +9,11 @@ const handlebars = require("handlebars");
 const morgan = require("morgan");
 
 const customErr = require("./src/models/customErr");
-
+const passport = require("passport");
+require("./src/middlewares/passport-gg");
+var session = require("express-session");
 // Config
+app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(cors());
 app.use(cookieParser());
@@ -18,12 +21,35 @@ app.use(express.json());
 
 // Body parser
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
 
 // Template engine
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.set("views", "./src/views");
+
+// Session
+app.use(
+  session({
+    secret: "ducba",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser(async (user, done) => {
+  try {
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
 
 handlebars.registerHelper("formatPrice", function (price) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
