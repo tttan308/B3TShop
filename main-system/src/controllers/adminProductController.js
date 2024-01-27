@@ -16,7 +16,24 @@ const adminProductController = {
   },
 
   getListProductPage: async (req, res) => {
+    const pageSize = 8;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * pageSize;
+    const name = req.query.name || "";
+
+    //get total page
+    const total = await Product.count({
+      where: {
+        ProductName: { [db.Sequelize.Op.like]: `%${name}%` },
+      },
+    });
+    const totalPages = Math.ceil(total / pageSize);
+
+    //sort by name and include category name
     const products = await Product.findAll({
+      where: {
+        ProductName: { [db.Sequelize.Op.like]: `%${name}%` },
+      },
       include: [
         {
           model: db.categories,
@@ -24,11 +41,22 @@ const adminProductController = {
           attributes: ["CategoryName"],
         },
       ],
+      order: [["ProductName", "ASC"]],
+      limit: pageSize,
+      offset: offset,
     });
 
-    console.log(products[0].ProductName);
+    // const products = await Product.findAll({
+    //   include: [
+    //     {
+    //       model: db.categories,
+    //       as: "Category",
+    //       attributes: ["CategoryName"],
+    //     },
+    //   ],
+    // });
 
-    res.render("list-product-page", { layout: "admin", products: products.map((p) => p.toJSON()) });
+    res.render("list-product-page", { layout: "admin", products: products.map((p) => p.toJSON()), totalPages: totalPages, page: page, name: name });
   },
 
   addProduct: async (req, res) => {
@@ -81,6 +109,12 @@ const adminProductController = {
     const product = await Product.findByPk(id);
     await product.destroy();
     res.send(product.toJSON());
+
+    //delete image
+    const imagePath = path.join(__dirname, `../../public/images/products/${id}.jpg`);
+    fs.unlink(imagePath, function (err) {
+      if (err) throw err;
+    });
   },
 };
 
