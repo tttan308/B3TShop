@@ -28,9 +28,14 @@
                 <a href="/admin/product/edit/{{this.ProductID}}" class="btn btn-success btn-sm rounded-0 text-white" type="button" data-toggle="tooltip" data-placement="top" title="Edit"><i
                     class="fa fa-edit"
                   ></i></a>
-                <a href="/admin/product/delete/{{this.ProductID}}" class="btn btn-danger btn-sm rounded-0 text-white" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i
-                    class="fa fa-trash"
-                  ></i></a>
+                <button
+                  onclick="showDeleteConfirmationModal('{{this.ProductName}}', '{{this.ProductID}}')"
+                  class="btn btn-danger btn-sm rounded-0 text-white"
+                  type="button"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Delete"
+                ><i class="fa fa-trash"></i></button>
               </td>
             </tr>
           {{/each}}
@@ -67,7 +72,7 @@
         <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-        <p>Bạn có chắc chắn muốn xóa san pham <span id="categoryNameToDelete"></span> không?</p>
+        <p>Bạn có chắc chắn muốn xóa san pham <span id="productNameToDelete"></span> không?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -76,3 +81,10 @@
     </div>
   </div>
 </div>
+
+<script>
+  function showDeleteConfirmationModal(productName, productID) { $('#productNameToDelete').text(productName); $('#deleteConfirmationModal').modal('show');
+  $('#deleteConfirmationModal').data('productID', productID); } function deleteCategory() { let productID = $('#deleteConfirmationModal').data('productID'); $.ajax({ url:
+  `/admin/product/delete/${productID}`, type: 'DELETE', success: function(result) { $('#deleteConfirmationModal').modal('hide'); location.reload(); }, error: function(err) {
+  $('#deleteConfirmationModal').modal('hide'); alert('Đã có lỗi xảy ra'); } }); }
+</script>

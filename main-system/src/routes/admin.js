@@ -21,7 +21,7 @@ const initAdminRoute = (app) => {
   route.post("/product/add", verifyToken, uploadProduct.single("image"), adminProductController.addProduct);
   route.get("/product/edit/:id", verifyToken, adminProductController.getEditProductPage);
   route.post("/product/edit/:id", verifyToken, uploadProduct.single("image"), adminProductController.updateProduct);
-  route.get("/product/delete/:id", verifyToken, adminProductController.deleteProduct);
+  route.delete("/product/delete/:id", verifyToken, adminProductController.deleteProduct);
 
   // Route quản lý đơn hàng
 

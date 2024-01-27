@@ -77,10 +77,10 @@ const adminProductController = {
     res.redirect("/admin/product/list");
   },
   deleteProduct: async (req, res) => {
-    const { id } = req.params;
+    const id = req.params.id;
     const product = await Product.findByPk(id);
     await product.destroy();
-    res.redirect("/admin/product/list");
+    res.send(product.toJSON());
   },
 };
 
