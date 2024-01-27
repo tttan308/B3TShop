@@ -6,9 +6,9 @@
                     <li>
                         <a href="/" title="">Trang chủ</a>
                     </li>
-                    {{!-- <li>
-                        <a href="" title="">Điện thoại</a>
-                    </li> --}}
+                    <li>
+                        <a href="" title="">Chi tiết sản phẩm</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="thumb-respon-wp fl-left">
                         {{#if product.ImageURL}}
-                        <img src="{{product.ImageURL}}" alt="{{product.ProductName}}">
+                        <img src="/{{product.ImageURL}}" alt="{{product.ProductName}}">
                         {{else}}
                         <img src="/images/img-pro-01.png" alt="{{product.ProductName}}">
                         {{/if}}
