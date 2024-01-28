@@ -7,6 +7,7 @@ const route = express.Router();
 const { uploadProduct } = require("../middlewares/uploadImage");
 const userController = require( "../controllers/userController" );
 const orderController = require( "../controllers/orderController" );
+const chartController = require( "../controllers/chartController" );
 
 const initAdminRoute = (app) => {
   // Route quản lý danh mục
@@ -30,10 +31,13 @@ const initAdminRoute = (app) => {
   route.get("/orders/detail/:id", verifyToken, orderController.getOrderDetailPage);
   route.delete("/orders/delete/:id", verifyToken, orderController.deleteOrder);
 
-
   // Route quản lý người dùng
   route.get("/users", verifyToken, userController.getUsersPage)
   route.delete("/users/delete/:id", verifyToken, userController.deleteUser)
+
+  //route get data for chart
+  route.get("/api/product-topsell", verifyToken, chartController.getTopSellingProductData);
+  route.get("/api/revenue-day", verifyToken, chartController.getRevenueByDayData); 
 
   app.use("/admin", route);
 };
