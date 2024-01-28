@@ -33,21 +33,33 @@ module.exports = {
   },
 
   getOrderDetailPage: async (req, res) => {
-    const id = req.params.id; 
-    const order = await Order.findByPk(id);
-    const products = await order.getProducts();
-    const user = await order.getUser();
-    const orderProducts = products.map((p) => p.toJSON());
-    const orderUser = user.toJSON();
-    const orderInfo = order.toJSON();
-    const orderDetail = {
-      ...orderInfo,
-      User: orderUser,
-      Products: orderProducts,
-    };
+    const detail = await Order.findByPk(req.params.id, {
+      include: [
+        {
+          model: db.users,
+          as: "User",
+          attributes: [
+            "FullName",
+            "Address",
+          ],
+        },
+        {
+          model: db.orderdetails,
+          as: "OrderDetails",
+          include: [
+            {
+              model: db.products,
+              as: "Product",
+              attributes: ["ProductName", "Price"],
+            },
+          ],
+        },
+      ],
+    });
+
     return res.render("order-detail", {
       layout: "admin",
-      order: orderDetail,
+      order: detail.toJSON(),
     });
   },
 
