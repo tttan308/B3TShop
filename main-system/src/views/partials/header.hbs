@@ -8,7 +8,7 @@
                         <a href="/" title="">Trang chủ</a>
                     </li>
                     <li>
-                        <a href="/product" title="">Sản phẩm</a>
+                        <a href="/product?page=1&sort=default&filter=default" title="">Sản phẩm</a>
                     </li>
                     <li>
                         <a href="/contact" title="">Liên hệ</a>
@@ -49,6 +49,7 @@
                     <input type="text" name="s" id="s" placeholder="Nhập từ khóa tìm kiếm tại đây!" />
                     <button type="submit" id="sm-s">Tìm kiếm</button>
                 </form>
+                <div id="search-results" class="search-results" style="display: none;"></div>
             </div>
             <div id="action-wp" class="fl-right">
                 <div id="advisory-wp" class="fl-left">
@@ -62,7 +63,7 @@
                         {{#if isLoggedIn}}
                         <a href="/cart" title="Giỏ hàng" style="text-decoration: none;">
                             <i class="fa fa-shopping-cart" aria-hidden="true" style="color: white;"></i>
-                            <span id="num" class="text-white">{{cartItems.length}}</span>
+                            <span id="num" class="text-white">{{shoppingCart.length}}</span>
                         </a>
                         {{else}}
                         <a href="/auth/login" title="Đăng nhập" style="text-decoration: none;">
@@ -72,13 +73,13 @@
                     </div>
                     {{#if isLoggedIn}}
                     <div id="dropdown">
-                        <p class="desc">Có <span>{{cartItems.length}} sản phẩm</span> trong giỏ hàng</p>
+                        <p class="desc">Có <span>{{shoppingCart.length}} sản phẩm</span> trong giỏ hàng</p>
                         <ul class="list-cart">
-                            {{#each cartItems}}
+                            {{#each shoppingCart}}
                             <li class="clearfix">
                                 <a href="" title="" class="thumb fl-left">
                                     {{#if this.ImageURL}}
-                                    <img src="{{this.ImageURL}}" alt="{{this.ProductName}}" />
+                                    <img src="/{{this.ImageURL}}" alt="{{this.ProductName}}" />
                                     {{else}}
                                     <img src="/images/img-pro-01.png" alt="{{this.ProductName}}" />
                                     {{/if}}
@@ -93,11 +94,11 @@
                         </ul>
                         <div class="total-price clearfix">
                             <p class="title fl-left">Tổng:</p>
-                            <p class="price fl-right">{{calculateTotalCartPrice cartItems}}</p>
+                            <p class="price fl-right">{{calculateTotalCartPrice shoppingCart}}</p>
                         </div>
                         <div class="action-cart clearfix">
                             <a href="/cart" title="Giỏ hàng" class="view-cart fl-left">Giỏ hàng</a>
-                            <a href="/checkout" title="Thanh toán" class="checkout fl-right">Thanh toán</a>
+                            <a href="/cart/checkout" title="Thanh toán" class="checkout fl-right">Thanh toán</a>
                         </div>
                     </div>
 
@@ -108,3 +109,48 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('#s').on('input', function () {
+            $('#sarch-results').show();
+            var searchTerm = $(this).val();
+
+            if (searchTerm.length > 0) {
+                $.ajax({
+                    url: '/product/find',
+                    type: 'POST',
+                    data: { keyword: searchTerm },
+                    success: function (response) {
+                        console.log(response);
+                        displaySearchResults(response);
+                    },
+                    error: function (xhr, status, error) {
+                        // Xử lý lỗi
+                        console.error('Search request failed: ', error);
+                    }
+                });
+            }
+        });
+    });
+
+    function displaySearchResults(data) {
+        var products = data.products;
+        var html = '';
+
+        products.forEach(function (product) {
+            html += '<a href="/product/detail/' + product.ProductID + '">' + product.ProductName + '</a><br>';
+        });
+
+        $('#search-results').html(html);
+    }
+
+    $(document).click(function (event) {
+        if (!$(event.target).closest('#search-wp').length) {
+            $('#search-results').hide();
+        } else {
+            $('#search-results').show();
+        }
+    });
+
+</script>

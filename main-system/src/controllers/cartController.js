@@ -95,7 +95,8 @@ const cartController = {
     try {
       const token = req.cookies.accessToken;
       const username = token ? jwt.decode(token).username : null;
-
+      const shoppingCart = await cartController.getCartItemsDetail(req, res);
+      const totalPriceInCartItems = await cartController.getAllPriceInCartItems(req, res);
       if (!token) {
         return res.redirect("/auth/login");
       }
@@ -147,12 +148,13 @@ const cartController = {
           Quantity: cartItems[i].Quantity,
         });
       }
-      console.log(result);
 
       return res.render("cart", {
         isLoggedIn: !!token,
         username: username,
         cartItems: result,
+        shoppingCart: shoppingCart,
+        totalPriceInCartItems: totalPriceInCartItems,
       });
     } catch (error) {
       console.log(error);
@@ -205,7 +207,15 @@ const cartController = {
         if (!product) {
           continue;
         }
+        const safeData = Object.assign({}, product.dataValues);
+        result.push({
+          ...safeData,
+          Quantity: cartItems[i].Quantity,
+        });
       }
+
+
+      return result;
     } catch (error) {
       console.log(error);
     }
@@ -279,10 +289,6 @@ const cartController = {
   },
 
   getCheckoutPage: async (req, res) => {
-    // Gửi request lên payment-system ở host 5000 để lấy thông tin tài khoản ngân hàng
-    // gửi kèm token và số tiền cần thanh toán
-    // nhận về thông tin tài khoản ngân hàng
-    // render ra trang checkout
     try {
       const token = req.cookies.accessToken;
       const username = token ? jwt.decode(token).username : null;
@@ -301,61 +307,162 @@ const cartController = {
         return res.redirect("/auth/login");
       }
 
-      const response = await fetch("https://localhost:5000/payment", {
-        method: "POST",
-        body: JSON.stringify({
-          amount: totalPriceInCartItems,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const cart = await Cart.findOne({
+        where: {
+          UserID: user.UserID,
         },
-        agent,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!cart) {
+        return res.redirect("/auth/login");
       }
 
-      const paymentAccounts = await response.json();
-            const totalPriceInCartItems = await cartController.getAllPriceInCartItems(
-                req,
-                res
-            );
+      const cartItems = await CartItem.findAll({
+        where: {
+          CartID: cart.CartID,
+        },
+      });
 
-            const userId = user.UserID;
+      const result = [];
 
-            fetch("https://localhost:5000/payment", {
-                method: "POST",
-                body: JSON.stringify({
-                    amount: totalPriceInCartItems,
-                    accountId: userId,
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                agent,
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.paymentUrl) {
-                    window.open(data.url, '_blank');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-
-
-            return res.render("checkout", {
-                isLoggedIn: !!token,
-                username: username,
-                paymentAccounts,
-            });
-        } catch (error) {
-            console.log(error);
+      // trong mỗi cartItem, lấy ra thông tin của sản phẩm qua ProductID,
+      //result chỉ lấy ẢNH SẢN PHẨM	TÊN SẢN PHẨM	GIÁ SẢN PHẨM	SỐ LƯỢNG	THÀNH TIỀN\
+      for (let i = 0; i < cartItems.length; i++) {
+        const product = await Product.findByPk(
+          cartItems[i].dataValues.ProductID
+        );
+        if (!product) {
+          continue;
         }
-    },
+        const safeData1 = Object.assign({}, product.dataValues);
+        result.push({
+          ...safeData1,
+          Quantity: cartItems[i].Quantity,
+        });
+      }
+
+      const totalPriceInCartItems = await cartController.getAllPriceInCartItems(req, res);
+      const shoppingCart = await cartController.getCartItemsDetail(req, res);
+      let safeData = Object.assign({}, user.dataValues);
+      return res.render("checkout", {
+        isLoggedIn: !!token,
+        username: username,
+        user: safeData,
+        cartItems: result,
+        totalPriceInCartItems: totalPriceInCartItems,
+        shoppingCart: shoppingCart,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  updateCart: async (req, res) => {
+    // data từ client: {productId, quantity}
+    try {
+      // [ { productId: 43, quantity: 1 }, { productId: 53, quantity: 4 } ]
+      // Lấy ra hết các productId và quantity
+      const newCartItems = req.body;
+
+      const token = req.cookies.accessToken;
+      const username = token ? jwt.decode(token).username : null;
+
+      if (!token) {
+        return res.redirect("/auth/login");
+      }
+
+      const user = await User.findOne({
+        where: {
+          Username: username,
+        },
+      });
+
+      if (!user) {
+        return res.redirect("/auth/login");
+      }
+
+      const cart = await Cart.findOne({
+        where: {
+          UserID: user.UserID,
+        },
+      });
+
+      console.log(cart);
+
+      if (!cart) {
+        return res.redirect("/auth/login");
+      }
+
+      // Xóa hết các cartItem cũ
+      await CartItem.destroy({
+        where: {
+          CartID: cart.CartID,
+        },
+      });
+
+      // Thêm các cartItem mới, nếu quantity = 0 thì không thêm
+      for (let i = 0; i < newCartItems.length; i++) {
+        if (newCartItems[i].quantity === 0) {
+          continue;
+        }
+
+        await CartItem.create({
+          CartID: cart.CartID,
+          ProductID: parseInt(newCartItems[i].productId),
+          Quantity: parseInt(newCartItems[i].quantity),
+        });
+      }
+      
+
+      console.log("Update cart successfully");
+      return res.status(200).send("Update cart successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  deleteCart: async (req, res) => {
+    try {
+      const token = req.cookies.accessToken;
+      const username = token ? jwt.decode(token).username : null;
+
+      if (!token) {
+        return res.redirect("/auth/login");
+      }
+
+      const user = await User.findOne({
+        where: {
+          Username: username,
+        },
+      });
+
+      if (!user) {
+        return res.redirect("/auth/login");
+      }
+
+      const cart = await Cart.findOne({
+        where: {
+          UserID: user.UserID,
+        },
+      });
+
+      if (!cart) {
+        return res.redirect("/auth/login");
+      }
+
+      await CartItem.destroy({
+        where: {
+          CartID: cart.CartID,
+        },
+      });
+
+      console.log("Delete cart successfully");
+      return res.status(200).send("Delete cart successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
 };
 
 module.exports = cartController;

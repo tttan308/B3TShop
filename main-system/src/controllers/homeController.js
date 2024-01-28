@@ -6,13 +6,15 @@ const cartController = require("./cartController");
 const homeController = {
   getHomePage: async (req, res) => {
     const token = req.cookies.accessToken;
-    console.log("token in home page:", token);
     const username = token ? jwt.decode(token).username : null;
+    
+    if(!token) {
+      return res.redirect("/auth/login");
+    }
     const categories = await categoryController.getAllCategory(req, res);
     const get4ProductOfEachCategory =
       await categoryController.get4ProductOfEachRootCategory(req, res);
     const shoppingCart = await cartController.getCartItemsDetail(req, res);
-
     return res.render("home", {
       isLoggedIn: !!token,
       username: username,
@@ -24,7 +26,20 @@ const homeController = {
 
   getContractPage: async (req, res) => {
     try {
-      return res.render("contact");
+      const token = req.cookies.accessToken;
+      console.log("token in home page:", token);
+      const username = token ? jwt.decode(token).username : null;
+      const categories = await categoryController.getAllCategory(req, res);
+      const get4ProductOfEachCategory =
+        await categoryController.get4ProductOfEachRootCategory(req, res);
+      const shoppingCart = await cartController.getCartItemsDetail(req, res);
+      return res.render("contact", {
+        isLoggedIn: !!token,
+        username: username,
+        categories: categories,
+        get4ProductOfEachCategory: get4ProductOfEachCategory,
+        shoppingCart: shoppingCart,
+      });
     } catch (error) {
       next(new customErr(error.message, 505));
     }

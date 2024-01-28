@@ -7,54 +7,104 @@
                         <a href="/" title="">Trang chủ</a>
                     </li>
                     <li>
+                        {{#if page.CategoryName}}
                         <a href="" title="">{{page.CategoryName}}</a>
+                        {{else}}
+                        <a href="" title="">Tất cả sản phẩm</a>
+                        {{/if}}
+
                     </li>
                 </ul>
             </div>
         </div>
+
         <div class="main-content fl-right">
-                <div class="section" id="list-product-wp">
-                    <div class="section-head clearfix">
-                        <h3 class="section-title fl-left">{{page.CategoryName}}</h3>
-                        <!-- Bổ sung filter và phân trang nếu cần -->
-                    </div>
-                    <div class="section-detail">
-                        <ul class="list-item clearfix" >
-                            {{#each page.products}}
-                            <li>
-                                <a href="/product/detail/{{ProductID}}" title="" class="thumb">
-                                    <img style="width:190px;height:190px;" src="/images/products/{{ProductID}}.jpg" alt="{{ProductName}}">
-                                </a>
-                                <a href="/product/detail/{{ProductID}}" title="" class="product-name text-truncate">{{ProductName}}</a>
-                                <div class="price">
-                                    <span class="new" style="font-size:13px;">{{Price}}đ</span>
-                                    <!-- Giả định có giá cũ để hiển thị, tính toán dựa trên Discount -->
-                                    <span class="old" style="font-size:13px;">{{calcOldPrice Price Discount}}đ</span>
-                                </div>
-                                <div class="action clearfix">
-                                    <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
-                                    <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
-                                </div>
-                            </li>
-                            {{/each}}
-                        </ul>
-                    </div>
+            <div class="filter-section">
+                <h2 class="title">Bộ lọc</h2>
+
+                <!-- Sắp Xếp -->
+                <div class="mb-3">
+                    <select id="sortPrice" class="form-select">
+                        <option value="asc" {{#if (eq page.sort "asc" )}}selected{{/if}}>Sắp xếp: Thấp đến Cao</option>
+                        <option value="desc" {{#if (eq page.sort "desc" )}}selected{{/if}}>Sắp xếp: Cao đến Thấp</option>
+                        <option value="default" {{#if (not (or (eq page.sort "asc" ) (eq page.sort "desc"
+                            )))}}selected{{/if}}>Sắp xếp: Mặc định</option>
+                    </select>
                 </div>
 
-                <!-- Phân Trang -->
-                <div class="section" id="paging-wp">
-                    <div class="section-detail">
-                        <ul class="list-item clearfix">
-                            {{#eachPagination page.totalPages}}
-                            <li>
-                                <a href="?page={{this}}" title="">{{this}}</a>
-                            </li>
-                            {{/eachPagination}}
-                        </ul>
-                    </div>
+                <!-- Lọc Theo Khoảng Giá -->
+                <div class="mb-3">
+                    <select id="filterPrice" class="form-select">
+                        <option value="below500" {{#if (eq page.filter "below500" )}}selected{{/if}}>Dưới 500.000đ
+                        </option>
+                        <option value="500to1000" {{#if (eq page.filter "500to1000" )}}selected{{/if}}>500.000đ -
+                            1.000.000đ</option>
+                        <option value="1000to5000" {{#if (eq page.filter "1000to5000" )}}selected{{/if}}>1.000.000đ -
+                            5.000.000đ</option>
+                        <option value="5000to10000" {{#if (eq page.filter "5000to10000" )}}selected{{/if}}>5.000.000đ -
+                            10.000.000đ</option>
+                        <option value="above10000" {{#if (eq page.filter "above10000" )}}selected{{/if}}>Trên
+                            10.000.000đ</option>
+                        <option value="default" {{#if (eq page.filter "default" )}}selected{{/if}}>Mặc định</option>
+                    </select>
                 </div>
-          
+
+                <div class="d-flex justify-content-end">
+                    <button onclick="applyFilter()" class="btn btn-primary">Áp dụng bộ lọc</button>
+                </div>
+            </div>
+
+            <div class="section" id="list-product-wp">
+                <div class="section-head clearfix">
+                    <h3 class="section-title fl-left">{{page.CategoryName}}</h3>
+                </div>
+                <div class="section-detail">
+                    <ul class="list-item clearfix">
+                        {{#each page.products}}
+                        <li>
+                            <a href="/product/detail/{{ProductID}}" title="" class="thumb">
+                                <img style="width:190px;height:190px;" src="/{{this.ImageURL}}"
+                                    alt="{{this.ProductName}}">
+                            </a>
+                            <a href="/product/detail/{{ProductID}}" title=""
+                                class="product-name text-truncate">{{ProductName}}</a>
+                            <div class="price">
+                                <span class="new" style="font-size:13px;">{{formatPrice Price}}</span>
+                                <!-- Giả định có giá cũ để hiển thị, tính toán dựa trên Discount -->
+                                <span class="old" style="font-size:13px;">{{calculateOldPrice Price Discount}}</span>
+                            </div>
+                            <div class="action clearfix">
+                                <a href="/add_cart" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
+                                <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
+                            </div>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            <div class="section" id="paging-wp">
+                <div class="section-detail">
+                    {{{pagination1 page.currentPage page.totalPages page.sort page.filter}}}
+                </div>
+            </div>
         </div>
         {{> sidebar_product}}
     </div>
 </div>
+
+<script>
+    function applyFilter() {
+        const sortValue = document.getElementById('sortPrice').value;
+        const filterValue = document.getElementById('filterPrice').value;
+
+        const currentPage = getCurrentPage();
+        const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+
+        window.location.href = `${baseUrl}?page=${currentPage}&sort=${sortValue}&filter=${filterValue}`;
+    }
+
+    function getCurrentPage() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('page') || 1;
+    }
+</script>

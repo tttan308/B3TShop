@@ -1,6 +1,8 @@
 const db = require("../models");
 const Category = db.categories;
 const Product = db.products;
+const cartController = require("./cartController");
+const jwt = require("jsonwebtoken");
 
 const categoryController = {
   getAllCategory: async (req, res) => {
@@ -205,6 +207,12 @@ const categoryController = {
 
   getCategoryById: async (req, res) => {
     try {
+      console.log("hehe");
+      const token = req.cookies.accessToken;
+      const username = token ? jwt.decode(token).username : null;
+      const categories = await categoryController.getAllCategory(req, res);
+      const shoppingCart = await cartController.getCartItemsDetail(req, res);
+
       const id = req.params.id;
       const category = await Category.findByPk(id);
 
@@ -244,18 +252,66 @@ const categoryController = {
       };
 
       // Phân trang, mỗi trang 12 sản phẩm
-      const page = req.query.page;
+      const page = req.query.page || 1;
+      const sort = req.query.sort || "default";
+      const filter = req.query.filter || "default";
+
+
+      if (sort === "asc") {
+        result.products.sort((a, b) => {
+          return a.Price - b.Price;
+        });
+      }
+
+      if (sort === "desc") {
+        result.products.sort((a, b) => {
+          return b.Price - a.Price;
+        });
+      }
+
+      if (filter === "below500") {
+        result.products = result.products.filter((product) => {
+          return product.Price < 500000;
+        });
+      } else if (filter === "500to1000") {
+        result.products = result.products.filter((product) => {
+          return product.Price >= 500000 && product.Price < 1000000;
+        });
+      }
+      else if (filter === "1000to5000") {
+        result.products = result.products.filter((product) => {
+          return product.Price >= 1000000 && product.Price < 5000000;
+        });
+      } else if (filter === "5000to10000") {
+        result.products = result.products.filter((product) => {
+          return product.Price >= 5000000 && product.Price < 10000000;
+        });
+      } else if (filter === "above10000") {
+        result.products = result.products.filter((product) => {
+          return product.Price >= 10000000;
+        });
+      }
+
       const limit = 12;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
       const total = result.products.length;
-
+      
       result.products = result.products.slice(startIndex, endIndex);
       const totalPages = Math.ceil(total / limit) || 1;
       result.totalPages = totalPages;
-      console.log(result.products);
+      result.currentPage = page;
+      result.sort = sort;
+      result.filter = filter;
 
-      res.render("product", { page: result });
+      console.log(result);
+      res.render("product", {
+        isLoggedIn: !!token,
+        username: username,
+        categories: categories,
+        page: result,
+        shoppingCart: shoppingCart,
+      });
     } catch (error) {
       res.status(500).send("Server Error");
     }

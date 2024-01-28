@@ -7,6 +7,8 @@ const initCartRoute = (app) => {
   route.get("/", cartController.getCartPage);
   route.post("/add", verifyToken, cartController.addCart);
   route.get("/checkout", verifyToken, cartController.getCheckoutPage);
+  route.post("/update", verifyToken, cartController.updateCart);
+  route.delete("/delete", verifyToken, cartController.deleteCart);
   app.use("/cart", verifyToken, route);
 };
 
