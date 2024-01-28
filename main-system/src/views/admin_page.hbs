@@ -1,0 +1,74 @@
+<div id="content" class="container-fluid">
+  <div class="card">
+    <div class="card-header font-weight-bold">
+      <h4 class="text-center fw-bold">Dashboard</h4>
+    </div>
+
+    <div class="card-body">
+      <div class="card chart-container">
+        <canvas id="revenue-chart"></canvas>
+      </div>
+      <div class="card chart-container">
+        <canvas id="product-sell-chart"></canvas>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .chart-container { width: 50%; height: 50%; margin: auto; }
+</style>
+
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+
+<script>
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    $.ajax({
+      url: "/admin/api/revenue-day",
+      method: "GET",
+      success: (result)=>{
+        const xValues = result.date;
+        const yValues = result.revenue;
+        new Chart("revenue-chart", {
+          type: "line",
+          data: {
+            labels: xValues,
+            datasets: [{
+              label: "Doanh thu trong 30 ngày",
+              backgroundColor:"rgba(0,0,255,1.0)",
+              borderColor: "rgba(0,0,255,0.1)",
+              data: yValues
+            }]
+          },
+        });
+      }
+    })
+
+    $.ajax({
+      url: "/admin/api/product-topsell",
+      method: "GET",
+      success: (result)=>{
+        const xValues = result.productName;
+        const yValues = result.quantity;
+        new Chart("product-sell-chart", {
+          type: "bar",
+          data: {
+            labels: xValues,
+            datasets: [{
+              label: "Top 10 sản phẩm bán chạy",
+              backgroundColor:"rgba(0,255,0,1.0)",
+              borderColor: "rgba(0,255,0,0.1)",
+              data: yValues
+            }]
+          },
+        });
+      }
+    })
+  })
+
+ 
+</script>
