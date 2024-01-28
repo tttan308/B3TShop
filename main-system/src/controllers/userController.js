@@ -14,6 +14,25 @@ const userController = {
         }
     },
 
+    getUsersPage: async (req, res) =>{
+        const searchName = req.query.name || "";
+
+        const users = await User.findAll({
+            where: {
+                FullName: {
+                    [db.Sequelize.Op.like]: `%${searchName}%`,
+                },
+            },
+            order: [["FullName", "ASC"]],
+        });
+
+        return res.render("users-manage", {
+            layout: "admin",
+            users: users.map((u) => u.toJSON()),
+        });
+    },
+
+
     getUserProfile: async (req, res) => {
         const token = req.cookies.accessToken;
         const username = jwt.decode(token).username;
@@ -133,6 +152,13 @@ const userController = {
 
         return res.redirect("/user/profile");
     },
+
+    deleteUser: async (req, res) => {
+        const id = req.params.id;
+        const user = await User.findByPk(id);
+        await user.destroy();
+        res.send(user.toJSON());
+    }
 }
 
 module.exports = userController;
