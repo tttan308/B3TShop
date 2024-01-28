@@ -8,6 +8,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+app.use(express.json());
+
 // Template engine
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");

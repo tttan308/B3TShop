@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <div class="section" id="same-category-wp">
+            {{!-- <div class="section" id="same-category-wp">
                 <div class="section-head">
                     <h3 class="section-title">Cùng chuyên mục</h3>
                 </div>
@@ -160,7 +160,36 @@
                         </li>
                     </ul>
                 </div>
+            </div> --}}
+            <div class="section" id="same-category-wp">
+                <div class="section-head">
+                    <h3 class="section-title">Cùng chuyên mục</h3>
+                </div>
+                <div class="section-detail">
+                    <ul class="list-item">
+                        {{#each relatedProducts}}
+                        <li>
+                            <a href="{{this.ProductID}}" title="{{this.ProductName}}" class="thumb">
+                                <img style="width:190px;height:190px;" src="/{{this.ImageURL}}">
+                            </a>
+                            <a href="{{this.ProductID}}" title="{{this.ProductName}}"
+                                class="product-name">{{this.ProductName}}</a>
+                            <div class="price">
+                                <span class="new">{{formatPrice this.Price}}</span>
+                                <span class="old">{{calculateOldPrice this.Price this.Discount}}</span>
+                            </div>
+                            <div class="action clearfix">
+                                <a href="cart/add/{{this.ProductID}}" title="Thêm vào giỏ hàng"
+                                    class="add-cart fl-left">Thêm giỏ hàng</a>
+                                <a href="checkout/{{this.ProductID}}" title="Mua ngay" class="buy-now fl-right">Mua
+                                    ngay</a>
+                            </div>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
             </div>
+
         </div>
         {{> sidebar}}
     </div>
@@ -178,7 +207,8 @@
                 <p id="modalAddToCartMessage"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">Đóng thông báo</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">Đóng thông
+                    báo</button>
                 <a href="/cart" class="btn btn-primary">Xem giỏ hàng</a>
             </div>
         </div>
@@ -192,7 +222,7 @@
             $('#modalAddToCart').modal('hide');
         }, 3000);
     });
-    
+
     function closeModal() {
         $('#modalAddToCart').modal('hide');
     }

@@ -41,7 +41,8 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="/product/detail/{{ProductID}}" title="" class="name-product">{{ProductName}}</a>
+                                <a href="/product/detail/{{ProductID}}" title=""
+                                    class="name-product">{{ProductName}}</a>
                             </td>
                             <td>{{formatPrice Price}}</td>
                             <td>
@@ -59,7 +60,8 @@
                         <tr>
                             <td colspan="7">
                                 <div class="clearfix">
-                                    <p id="total-price" class="fl-right">Tổng giá: <span>850.000đ</span></p>
+                                    <p id="total-price" class="fl-right">Tổng giá: <span>{{formatPrice
+                                            totalPriceInCartItems}}</span></p>
                                 </div>
                             </td>
                         </tr>
@@ -93,7 +95,75 @@
     function updateTotalPrice(productId, quantity, price) {
         var newTotalPrice = quantity * price;
         var formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(newTotalPrice);
-
         document.getElementById('total-price-' + productId).textContent = formattedPrice;
+
+        updateCartTotal();
     }
+
+    function updateCartTotal() {
+        var total = 0;
+        var cartItems = document.querySelectorAll('tbody tr');
+
+        cartItems.forEach(function (item) {
+            var priceElement = item.querySelector('[id^="total-price-"]');
+            var priceText = priceElement.textContent;
+            var price = Number(priceText.replace(/[^0-9,-]+/g, "").replace(",", "."));
+
+            total += price;
+        });
+
+        var formattedTotalPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
+        document.getElementById('total-price').innerHTML = 'Tổng giá: <span>' + formattedTotalPrice + '</span>';
+    }
+
+    $(document).ready(function () {
+        $('#update-cart').click(function (event) {
+            event.preventDefault();
+            updateCart();
+        });
+
+        function updateCart() {
+            var updateData = [];
+
+            $('tbody tr').each(function () {
+                var productId = $(this).find('td:first-child').text().trim();
+                var quantity = $(this).find('.num-order').val();
+                productId = Number(productId);
+                quantity = Number(quantity);
+                console.log(productId, quantity);
+                updateData.push({ productId: productId, quantity: quantity });
+            });
+
+            $.ajax({
+                url: '/cart/update',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(updateData),
+                success: function (response) {
+                    console.log('Success:', response);
+                    window.location.href = '/cart';
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        $('#delete-cart').click(function (event) {
+            event.preventDefault();
+            if (confirm('Bạn có chắc chắn muốn xóa giỏ hàng không?')) {
+                $.ajax({
+                    url: '/cart/delete',
+                    type: 'DELETE',
+                    success: function (response) {
+                        console.log('Giỏ hàng đã được xóa');
+                        window.location.reload(); // Tải lại trang
+                    },
+                    error: function (error) {
+                        console.error('Có lỗi xảy ra:', error);
+                    }
+                });
+            }
+        });
+    });
 </script>

@@ -14,82 +14,84 @@
         </div>
     </div>
     <div id="wrapper" class="wp-inner clearfix">
-        <div class="section" id="customer-info-wp">
-            <div class="section-head">
-                <h1 class="section-title">Thông tin khách hàng</h1>
-            </div>
-            <div class="section-detail">
-                <form method="POST" action="" name="form-checkout">
-                    <div class="form-row clearfix">
-                        <div class="form-col fl-left">
-                            <label for="fullname">Họ tên</label>
-                            <input type="text" name="fullname" id="fullname" value="Đặng Đức Ba" disabled>
-                        </div>
-                        <div class="form-col fl-right">
-                            <label for="phone">Số điện thoại</label>
-                            <input type="tel" name="phone" id="phone" value="0966738474" disabled>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form_address">
-                            <label for="address">Địa chỉ</label>
-                            <input type="text" name="address" id="address" value="51 đường số 10, phường Linh Chiểu, Thủ Đức" disabled>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label for="notes">Ghi chú</label>
-                            <textarea name="note"></textarea>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="section" id="order-review-wp">
-            <div class="section-head">
-                <h1 class="section-title">Thông tin đơn hàng</h1>
-            </div>
-            <div class="section-detail">
-                <table class="shop-table">
-                    <thead>
-                        <tr>
-                            <td>Sản phẩm</td>
-                            <td>Tổng</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="cart-item">
-                            <td class="product-name">Điện thoại Iphone15<strong class="product-quantity">x 1</strong></td>
-                            <td class="product-total">35.000.000đ</td>
-                        </tr>
-                        <tr class="cart-item">
-                            <td class="product-name">Laptop HP Probook 440 G2 LED Backlit<strong class="product-quantity">x 2</strong></td>
-                            <td class="product-total">15.000.000đ</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="order-total">
-                            <td>Tổng đơn hàng:</td>
-                            <td><strong class="total-price">65.000.000đ</strong></td>
-                        </tr>
-                    </tfoot>
-                </table>
-                <div id="payment-checkout-wp">
-                    <ul id="payment_methods">
-                        <li>
-                            <input type="radio" id="direct-payment" name="payment-method" value="direct-payment">
-                            <label for="direct-payment">Thanh toán qua chuyển khoản</label>
-                        </li>
-                        <li>
-                            <input type="radio" id="payment-home" name="payment-method" value="payment-home">
-                            <label for="payment-home">Thanh toán tại nhà</label>
-                        </li>
-                    </ul>
+        <div id="wrapper" class="wp-inner clearfix">
+            <div class="section" id="customer-info-wp">
+                <div class="section-head">
+                    <h1 class="section-title">Thông tin khách hàng</h1>
                 </div>
-                <div class="place-order-wp clearfix">
-                    <input type="submit" id="order-now" value="Đặt hàng">
+                <div class="section-detail">
+                    <form method="POST" action="" name="form-checkout">
+                        <div class="form-row clearfix">
+                            <div class="form-col fl-left">
+                                <label for="fullname">Họ tên</label>
+                                <input type="text" name="fullname" id="fullname" value="{{user.FullName}}" disabled>
+                            </div>
+                            <div class="form-col fl-right">
+                                <label for="phone">Số điện thoại</label>
+                                <input type="tel" name="phone" id="phone" value="{{user.PhoneNumber}}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form_address">
+                                <label for="address">Địa chỉ</label>
+                                <input type="text" name="address" id="address" value="{{user.Address}}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="notes">Ghi chú</label>
+                                <textarea name="note"></textarea>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+            <div class="section" id="order-review-wp">
+                <div class="section-head">
+                    <h1 class="section-title">Thông tin đơn hàng</h1>
+                </div>
+                <div class="section-detail">
+                    <div class="section-detail">
+                        <table class="shop-table">
+                            <thead>
+                                <tr>
+                                    <td>Sản phẩm</td>
+                                    <td>Tổng</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each cartItems}}
+                                <tr class="cart-item">
+                                    <td class="product-name">{{ProductName}}<strong class="product-quantity">x
+                                            {{Quantity}}</strong></td>
+                                    <td class="product-total">{{calculateTotalPrice Price Quantity}}</td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                            <tfoot>
+                                <tr class="order-total">
+                                    <td>Tổng đơn hàng:</td>
+                                    <td><strong class="total-price">{{formatPrice totalPriceInCartItems}}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div id="payment-checkout-wp">
+                            <ul id="payment_methods">
+                                <li>
+                                    <input type="radio" id="direct-payment" name="payment-method"
+                                        value="direct-payment">
+                                    <label for="direct-payment">Thanh toán qua chuyển khoản</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="payment-home" name="payment-method" value="payment-home">
+                                    <label for="payment-home">Thanh toán tại nhà</label>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="place-order-wp clearfix">
+                            <input type="submit" id="order-now" value="Đặt hàng">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>

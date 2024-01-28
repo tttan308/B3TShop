@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        AccountID: {
-            type: DataTypes.INTEGER,
+        Username: {
+            type: DataTypes.STRING(50),
             allowNull: false
         },
         Amount: {

@@ -160,7 +160,8 @@
                         <li>
                             <a href="product/detail/{{this.ProductID}}" title="" class="thumb">
                                 {{#if this.ImageURL}}
-                                <img style="width:190px;height:190px;" src="/images/products/{{this.ProductID}}.jpg">
+                                <img style="width:190px;height:190px;" src="/{{this.ImageURL}}"
+                                    alt="{{product.ProductName}}">
                                 {{else}}
                                 <img src="images/img-pro-01.png">
                                 {{/if}}
@@ -170,11 +171,13 @@
                             <div class="price">
                                 <span class="new" style="font-size:13px;">{{formatPrice this.Price}}</span>
                                 {{#if this.Discount}}
-                                <span class="old" style="font-size:13px;">{{calculateOldPrice this.Price this.Discount}}</span>
+                                <span class="old" style="font-size:13px;">{{calculateOldPrice this.Price
+                                    this.Discount}}</span>
                                 {{/if}}
                             </div>
                             <div class="action clearfix">
-                                <a role="button" onclick="addToCart('{{this.ProductID}}', 1)" title="Thêm giỏ hàng" class="add-cart fl-left">Thêm giỏ hàng</a>
+                                <a role="button" onclick="addToCart('{{this.ProductID}}', 1)" title="Thêm giỏ hàng"
+                                    class="add-cart fl-left">Thêm giỏ hàng</a>
                                 <a href="/checkout" title="Mua ngay" class="buy-now fl-right">Mua ngay</a>
                             </div>
                         </li>
@@ -202,7 +205,8 @@
                 <p id="modalAddToCartMessage"></p>
             </div>
             <div class="modal-footer">
-                <a role="button" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">Đóng thông báo</a>
+                <a role="button" type="button" class="btn btn-secondary" data-dismiss="modal"
+                    onclick="closeModal()">Đóng thông báo</a>
                 <a href="/cart" class="btn btn-primary">Xem giỏ hàng</a>
             </div>
         </div>
@@ -225,7 +229,7 @@
             $('#modalAddToCart').modal('hide');
         }, 3000);
     });
-    
+
     function closeModal() {
         $('#modalAddToCart').modal('hide');
     }

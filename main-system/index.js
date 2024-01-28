@@ -110,6 +110,70 @@ handlebars.registerHelper("eachPagination", function (totalPages, options) {
   return result;
 });
 
+handlebars.registerHelper('pagination1', function (currentPage, totalPages, sort, filter, options) {
+  // let result = '<ul class="list-item clearfix">';
+
+  // // Nút Lùi Trang
+  // if (currentPage > 1) {
+  //   result += `<li><a href="?page=${currentPage - 1}" title="">Previous</a></li>`;
+  // }
+
+  // for (let i = 1; i <= totalPages; i++) {
+  //   if (i === 1 || i === totalPages || i === currentPage || Math.abs(currentPage - i) <= 3) {
+  //     result += `<li><a href="?page=${i}" title="">${i}</a></li>`;
+  //   } else if (i === 2 || i === totalPages - 1) {
+  //     result += `<li>...</li>`;
+  //   }
+  // }
+
+  // // Nút Tiến Trang
+  // if (currentPage < totalPages) {
+  //   const nextPage = parseInt(currentPage) + 1;
+  //   result += `<li><a href="?page=${nextPage}" title="">Next</a></li>`;
+  // }
+
+  // result += '</ul>';
+  // return new handlebars.SafeString(result);
+
+  let result = '<ul class="list-item clearfix">';
+
+  // Nút Lùi Trang
+  if (currentPage > 1) {
+    result += `<li><a href="?page=${currentPage - 1}&sort=${sort}&filter=${filter}" title="">Previous</a></li>`;
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || i === currentPage || Math.abs(currentPage - i) <= 3) {
+      result += `<li><a href="?page=${i}&sort=${sort}&filter=${filter}" title="">${i}</a></li>`;
+    } else if (i === 2 || i === totalPages - 1) {
+      result += `<li>...</li>`;
+    }
+  }
+
+  // Nút Tiến Trang
+  if (currentPage < totalPages) {
+    const nextPage = parseInt(currentPage) + 1;
+    result += `<li><a href="?page=${nextPage}&sort=${sort}&filter=${filter}" title="">Next</a></li>`;
+  }
+
+  result += '</ul>';
+  return new handlebars.SafeString(result);
+});
+
+handlebars.registerHelper('eq', function(arg1, arg2, options) {
+  return arg1 == arg2;
+});
+
+handlebars.registerHelper('or', function(arg1, arg2, options) {
+  return arg1 || arg2;
+});
+
+handlebars.registerHelper('not', function(arg1, options) {
+  return !arg1;
+});
+
+
+
 // Routes
 const initRoutes = require("./src/routes");
 initRoutes(app);
