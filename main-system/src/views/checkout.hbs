@@ -95,3 +95,40 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="loading" style="display:none;">Đang xử lý...</div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#order-now').click(function () {
+            showLoading();
+            $.ajax({
+                url: '/cart/get-amount-to-pay',
+                method: 'GET',
+                success: function (response) {
+                    const token_payment = response ;
+                    const paymentUrl = `https://localhost:5000/payment?token=${token_payment}`;
+
+                    window.open(paymentUrl, '_blank');
+
+                },
+                error: handlePaymentError
+            });
+        });
+    });
+
+    function showLoading() {
+        $('#loading').show();
+    }
+
+    function hideLoading() {
+        $('#loading').hide();
+    }
+
+    function handlePaymentError(xhr, status, error) {
+        alert('Có lỗi khi xử lý thanh toán: ' + error);
+    }
+
+
+</script>

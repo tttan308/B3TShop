@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const User = db.users;
 const Product = db.products;
 const https = require("https");
-const fetch = require("node-fetch");
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
@@ -412,7 +411,7 @@ const cartController = {
           Quantity: parseInt(newCartItems[i].quantity),
         });
       }
-      
+
 
       console.log("Update cart successfully");
       return res.status(200).send("Update cart successfully");
@@ -463,6 +462,20 @@ const cartController = {
     }
   },
 
+  getAmountToPay: async (req, res) => {
+    try {
+      const token = req.cookies.accessToken;
+      const username = token ? jwt.decode(token).username : null;
+      const amountToPay = await cartController.getAllPriceInCartItems(req, res);
+      
+      //token-payment chứa username, amountToPay
+      const token_payment = jwt.sign( {username: username, amountToPay: amountToPay}, process.env.JWT_SECRET , { expiresIn: 60 * 60 * 24 * 30 } );
+
+      return res.status(200).send(token_payment);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 
 module.exports = cartController;

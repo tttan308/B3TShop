@@ -1,0 +1,19 @@
+<div class="container mt-5">
+    <h2 class="mb-4">Danh Sách Đơn Hàng</h2>
+
+    <div class="row">
+        {{#each orders}}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Đơn Hàng #{{OrderID}}</h5>
+                    <p class="card-text">ID Người Dùng: {{UserID}}</p>
+                    <p class="card-text">Ngày Đặt: {{formatDate OrderDate}}</p>
+                    <p class="card-text">Tổng Số Tiền: {{formatPrice TotalAmount}}</p>
+                    <p class="card-text">Trạng Thái: {{Status}}</p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
