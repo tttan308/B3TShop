@@ -1,0 +1,20 @@
+<!-- FILEPATH: /C:/Users/cvtai/OneDrive/Desktop/B3TShop/main-system/src/views/order-detail.hbs -->
+
+<h1>Order Detail</h1>
+
+<div class="order-details">
+  <h2>Order Information</h2>
+  <p>Order ID: {{order.orderId}}</p>
+  <p>Customer Name: {{order.User.FullName}}</p>
+  <p>Order Date: {{order.orderDate}}</p>
+  <p>Shipping Address: {{order.User.Address}}</p>
+</div>
+
+<div class="order-items">
+  <h2>Order Items</h2>
+  <ul>
+    {{#each order.OrderDetails}}
+      <li>{{ProductName}} - {{Price}}</li>
+    {{/each}}
+  </ul>
+</div>
