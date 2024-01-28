@@ -4,9 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       OrderDetailID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
       OrderID: { type: DataTypes.INTEGER },
+    
       ProductID: { type: DataTypes.INTEGER },
       Quantity: { type: DataTypes.INTEGER },
       Price: { type: DataTypes.DECIMAL(10, 2) },
+
     },
     {
       timestamps: false,

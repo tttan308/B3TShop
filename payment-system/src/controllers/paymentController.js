@@ -2,21 +2,20 @@ const db = require('../models');
 const Transaction = db.transactions;
 const jwt = require('jsonwebtoken');
 const { Op } = require("sequelize");
-let paymentSessions = {};
 const PaymentAccount = db.paymentAccounts;
+const dotenv = require('dotenv');
+dotenv.config();
 
 const paymentController = {
-    authorizePayment: async (req, res) => {
+    getPaymentPage: async (req, res) => {
         try {
-            const token = req.headers.authorization.split(' ')[1];
-            // verify token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const username = decoded.username;
-            const amount = req.body.amount;
+            const token = req.query.token || req.cookies.payment_token;
+            // Lưu token vào cookie
+            res.cookie('payment_token', token, { maxAge: 900000, httpOnly: true });
 
-            //Kiểm tra xem PaymentAccount có tồn tại không
-            // Nếu không thì tự động tạo mới
-            // Nếu có thì lấy ra    
+            const username = jwt.verify(token, process.env.JWT_SECRET).username;
+            const amountToPay = jwt.verify(token, process.env.JWT_SECRET).amountToPay;
+
             const paymentAccount = await PaymentAccount.findOne({
                 where: {
                     Username: username
@@ -28,63 +27,101 @@ const paymentController = {
                     Username: username,
                     Balance: 0
                 });
-
             }
 
-            const paymentSessionId = await paymentController.createPaymentSession(amount, username);
-            const paymentUrl = `http://localhost:5000/payment?sessionId=${paymentSessionId}`;
+            // Lay ra balance cua user
+            const balance = paymentAccount.Balance;
 
-            res.json({ paymentUrl });
-            // // Kiểm tra xem có đủ tiền để thanh toán không
-            // // Nếu không thì trả về lỗi
-            // // Nếu có thì trừ tiền và tạo transaction
-            // if (paymentAccount.Balance < amount) {
-            //     return res.status(400).send({
-            //         message: 'Not enough money'
-            //     });
-            // }
+            // Render payment page
+            res.render('payment', {
+                username: username,
+                amountToPay: amountToPay,
+                balance: balance
+            });
 
-            // // Trừ tiền
-            // paymentAccount.Balance -= amount;
-            // await paymentAccount.save();
-
-            // // Tạo transaction
-            // const transaction = await Transaction.create({
-            //     Username: username,
-            //     Amount: amount
-            // });
-
-            // return res.status(200).send(transaction);
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
         }
     },
 
-    getPaymentPage: (req, res) => {
-        // const token = req.headers.authorization.split(' ')[1];
-        // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // const username = decoded.username;
-        // return res.render('home', {
-        //     username: username
-        // });
+    getPaymentPage2: async (req, res) => {
+        console.log(req.cookies.payment_token);
+        try {
+            const token = req.cookies.payment_token;
+            const username = jwt.verify(token, process.env.JWT_SECRET).username;
+            const amountToPay = jwt.verify(token, process.env.JWT_SECRET).amountToPay;
+
+            const paymentAccount = await PaymentAccount.findOne({
+                where: {
+                    Username: username
+                }
+            });
+
+            if (!paymentAccount) {
+                const newPaymentAccount = await PaymentAccount.create({
+                    Username: username,
+                    Balance: 0
+                });
+            }
+
+            // Lay ra balance cua user
+            const balance = paymentAccount.Balance;
+
+            // Render payment page
+            res.render('payment', {
+                username: username,
+                amountToPay: amountToPay,
+                balance: balance
+            });
+
+        } catch (error) {
+            console.log(error);
+        }
     },
 
-    createPaymentSession: async (amount, username) => {
-        const sessionId = `sess_${new Date().getTime()}`;
+    pay: async (req, res) => {
+        try {
+            const token = req.cookies.payment_token;
 
-        paymentSessions[sessionId] = {
-            amount: amount,
-            username: username,
-            createdAt: new Date()
-        };
+            const username = jwt.verify(token, process.env.JWT_SECRET).username;
+            const amountToPay = jwt.verify(token, process.env.JWT_SECRET).amountToPay;
 
-        return sessionId;
-    },
+            const paymentAccount = await PaymentAccount.findOne({
+                where: {
+                    Username: username
+                }
+            });
 
-    getPaymentSession: (sessionId) => {
-        return paymentSessions[sessionId];
-    },
+            const balance = paymentAccount.Balance;
+
+            if (balance < amountToPay) {
+                res.json({ message: 'Không đủ tiền' })
+            }
+
+            const newBalance = balance - amountToPay;
+
+            await PaymentAccount.update({
+                Balance: newBalance
+            }, {
+                where: {
+                    Username: username
+                }
+            });
+
+            const newTransaction = await Transaction.create({
+                Username: username,
+                Amount: amountToPay,
+                TransactionDate: new Date()
+            });
+
+            
+            res.json({ token: token, message: 'Thanh toán thành công' });
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 }
 
 module.exports = paymentController;

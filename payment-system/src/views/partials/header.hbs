@@ -1,8 +1,8 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="/">PAYMENT</a>
->
+            <a class="navbar-brand" href="/payment">PAYMENT</a>
+            
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -20,7 +20,10 @@
                             Welcome, {{username}}
                         </span>
                         <span class="navbar-text">
-                            | Số Dư: {{balance}}
+                            | Số Dư: {{formatPrice balance}}
+                        </span>
+                        <span>
+                            | <a href="/logout" onclick="handleLogout()" style="text-decoration: none;">Đăng Xuất</a>
                         </span>
                     </div>
                 </div>
@@ -28,3 +31,20 @@
         </div>
     </nav>
 </header>
+
+<script>
+    function handleLogout() {
+        fetch('/logout')
+            .then(response => {
+                if (response.ok) {
+                    window.close();
+                } else {
+                    throw new Error('Đăng xuất thất bại');
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+        return false; 
+    }
+</script>

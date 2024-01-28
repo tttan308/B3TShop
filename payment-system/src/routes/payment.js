@@ -2,8 +2,9 @@ const express = require("express");
 const route = express.Router();
 const paymentController = require("../controllers/paymentController.js");
 const initPayment = (app) => {
-    route.get("/", paymentController.getPaymentPage);
-    route.post("/", paymentController.authorizePayment);
+    route.get("/?", paymentController.getPaymentPage);
+    route.get("/", paymentController.getPaymentPage2)
+    route.get("/pay", paymentController.pay)
     app.use("/payment", route);
 }
 

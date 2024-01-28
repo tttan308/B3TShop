@@ -9,6 +9,7 @@ const initCartRoute = (app) => {
   route.get("/checkout", verifyToken, cartController.getCheckoutPage);
   route.post("/update", verifyToken, cartController.updateCart);
   route.delete("/delete", verifyToken, cartController.deleteCart);
+  route.get("/get-amount-to-pay", verifyToken, cartController.getAmountToPay);
   app.use("/cart", verifyToken, route);
 };
 

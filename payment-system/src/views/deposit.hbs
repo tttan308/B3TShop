@@ -1,0 +1,23 @@
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2>Số Dư Hiện Tại: {{formatPrice balance}}</h2>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Nạp Tiền Vào Tài Khoản</h5>
+                    <form id="deposit-form">
+                        <div class="form-group">
+                            <label for="amount">Số Tiền Muốn Nạp</label>
+                            <input type="number" class="form-control" id="amount" name="amount"
+                                placeholder="Nhập số tiền" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Nạp Tiền</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

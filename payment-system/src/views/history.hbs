@@ -1,0 +1,14 @@
+<div class="container mt-5">
+    <h2 class="mb-4">Lịch Sử Giao Dịch</h2>
+
+    {{#each transactions}}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Giao Dịch #{{this.TransactionID}}</h5>
+            <p class="card-text">Người dùng: {{Username}}</p>
+            <p class="card-text">Số tiền: {{formatPrice Amount}}</p>
+            <p class="card-text">Ngày giao dịch: {{formatDate TransactionDate}}</p>
+        </div>
+    </div>
+    {{/each}}
+</div>

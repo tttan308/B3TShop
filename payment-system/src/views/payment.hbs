@@ -1,0 +1,66 @@
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1>Xin chào, {{username}}</h1>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông Tin Thanh Toán</h5>
+            <p class="card-text">Số tiền cần thanh toán: {{formatPrice amountToPay}}</p>
+            <p class="card-text">Số dư hiện tại: {{formatPrice balance}}</p>
+
+            <button type="button" id="payment-button" class="btn btn-primary btn-lg btn-block"
+                onclick="processPayment()">Thanh toán</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Kết Quả Thanh Toán</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function processPayment() {
+        console.log('click');
+        $.ajax({
+            url: '/payment/pay',
+            method: 'GET',
+            success: function (response) {
+                showModal("Thanh toán thành công!");
+                // gửi request về 
+                // reload page https://localhost:3000 để thông báo thanh toán thành công
+                const token = response.token;
+                const paymentUrl = `https://localhost:3000/order`;
+                window.open(paymentUrl, '_blank');
+
+                setTimeout(function () {
+                    window.location.reload();
+                }, 1000);
+
+                // close window
+                window.close();
+            },
+            error: function (eror) {
+                showModal("Thanh toán thất bại. Lỗi: " + error.responseText);
+            }
+        });
+    }
+
+    function showModal(message) {
+        $('#paymentModal .modal-body').text(message);
+        $('#paymentModal').modal('show');
+    }
+</script>
